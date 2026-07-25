@@ -1,0 +1,28 @@
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE and Editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Gradle build & cache directories
+.gradle/
+.gradle_home/
+.gradle_user_home/
+build/
+**/build/
+
+# Node dependencies and build
+node_modules/
+**/node_modules/
+dist/
+**/dist/
+
+# Environment files
+.env
+
+# Large archives or temporary binaries
+*.zip

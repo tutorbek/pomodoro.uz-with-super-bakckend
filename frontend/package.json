@@ -1,0 +1,17 @@
+{
+  "name": "pomodoro-frontend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host --port 5500",
+    "build": "vite build",
+    "preview": "vite preview --port 5500"
+  },
+  "devDependencies": {
+    "vite": "^5.2.0"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.6.0"
+  }
+}

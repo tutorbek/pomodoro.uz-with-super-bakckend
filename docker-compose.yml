@@ -1,0 +1,54 @@
+services:
+  cockroachdb:
+    image: cockroachdb/cockroach:latest
+    command: start-single-node --insecure
+    ports:
+      - "26257:26257"
+      - "8082:8080"
+    volumes:
+      - cockroach_data:/cockroach/cockroach-data
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  cockroach-init:
+    image: cockroachdb/cockroach:latest
+    command: sh -c 'until cockroach sql --host=cockroachdb:26257 --insecure --execute="CREATE DATABASE IF NOT EXISTS pomodoro;"; do sleep 2; done'
+    depends_on:
+      - cockroachdb
+
+  backend:
+    build:
+      context: ./backend
+    ports:
+      - "8080:8080"
+    environment:
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
+      JWT_SECRET: ${JWT_SECRET}
+      FRONTEND_URL: ${FRONTEND_URL:-https://pomodoro.uz}
+      SPRING_R2DBC_URL: r2dbc:postgresql://cockroachdb:26257/pomodoro?sslmode=disable
+      SPRING_R2DBC_USERNAME: root
+      SPRING_R2DBC_PASSWORD:
+      SPRING_FLYWAY_URL: jdbc:postgresql://cockroachdb:26257/pomodoro?sslmode=disable&options=-c%20allow_unsafe_internals=true
+      SPRING_FLYWAY_USER: root
+      SPRING_FLYWAY_PASSWORD:
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+    depends_on:
+      - cockroach-init
+      - redis
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "5500:5500"
+    depends_on:
+      - backend
+
+volumes:
+  cockroach_data:
+

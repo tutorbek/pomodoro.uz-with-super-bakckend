@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="uz" class="app-loading">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" id="metaThemeColor" content="#F4F5FA">
+  <meta name="description"
+    content="Pomodoro.uz — Mahsuldorlikni oshirish, dars qilish va dasturlashga fokuslanish uchun bepul onlayn Pomodoro taymeri, Lofi musiqa, Notion-style vazifalar va analitika ilovasi.">
+  <meta name="keywords"
+    content="pomodoro timer, focus timer, productivity app, study timer, work timer, online timer, pomodoro technique, pomodoro uz, lofi beats, vaqtni boshqarish, mahsuldorlik, dars qilish taymeri">
+  <title>25:00 - Diqqatni bir joyga jamlash vaqti | Pomodoro.uz</title>
+  <meta name="color-scheme" content="light dark">
+
+  <script>
+    (function() {
+      try {
+        var validThemes = ['clay', 'clay-dark', 'neumorphism', 'sand-sage'];
+        var t = localStorage.getItem('pomodo_theme');
+        if (!t || validThemes.indexOf(t) === -1) {
+          var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          t = isDark ? 'clay-dark' : 'clay';
+        }
+        document.documentElement.setAttribute('data-theme', t);
+        
+        var themeColors = {
+          'clay': '#F4F5FA',
+          'clay-dark': '#181920',
+          'neumorphism': '#E6EAEF',
+          'sand-sage': '#F5F5F0'
+        };
+        var color = themeColors[t] || '#F4F5FA';
+        var meta = document.getElementById('metaThemeColor');
+        if (meta) meta.setAttribute('content', color);
+      } catch (e) {}
+    })();
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+
+  <!-- Open Graph / Social Cards -->
+  <meta property="og:title" content="Pomodoro.uz — Mahsuldorlik va Fokuslanish Taymeri" />
+  <meta property="og:description" content="Dars qilish, dasturlash va yozish uchun bepul onlayn Pomodoro taymer, Lofi musiqa va analitika platformasi." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://pomodoro.uz/" />
+  <meta property="og:image" content="https://pomodoro.uz/preview.png" />
+
+  <!-- Structured Data / JSON-LD for Google AI Overview & Rich Snippets -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Pomodoro.uz",
+    "url": "https://pomodoro.uz/",
+    "description": "Mahsuldorlikni oshirish, dars qilish va dasturlashga fokuslanish uchun zamonaviy onlayn Pomodoro taymeri, Lofi musiqa va analitika platformasi.",
+    "applicationCategory": "ProductivityApplication",
+    "operatingSystem": "All",
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Moslashuvchan Pomodoro Taymer (25 min ish / 5 min tanaffus)",
+      "Lofi Chill Beats va Audio Pleyer",
+      "Notion usulidagi vazifalar checklisti",
+      "Real-vaqt analitikasi va streak ko'rsatkichlari",
+      "Telegram Cloud Sinxronizatsiyasi",
+      "OLED, Neumorphism va Dark/Light visual mavzular"
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      {
+        "@type": "Question",
+        "name": "Pomodoro.uz nima va u qanday yordam beradi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Pomodoro.uz — diqqatni bir joyga jamlash, dars qilish, dasturlash va yozish jarayonida mahsuldorlikni oshirish uchun yaratilgan bepul onlayn Pomodoro taymer va fokus ilovasidir."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Pomodoro texnikasi qanday ishlaydi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Pomodoro texnikasi ish vaqtini 25 daqiqalik intensiv diqqat seansiga va undan so'ng 5 daqiqalik qisqa tanaffusga bo'ladi. Har 4 ta seansdan so'ng 15 daqiqalik uzun tanaffus beriladi."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Pomodoro.uz bepulmi?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Ha, Pomodoro.uz to'liq bepul bo'lib, barcha imkoniyatlaridan (taymer, lofi musiqa, vazifalar, analitika va mavzular) cheklovlarsiz foydalanishingiz mumkin."
+        }
+      }
+    ]
+  }
+  </script>
+
+  <link rel="icon" type="image/png" href="logopomodoro.png">
+  <link rel="preconnect" href="https://www.youtube.com">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@200;300;400&family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+
+<body>
+  <!-- SEO Hidden Content for Search Engines & Google AI Overviews -->
+  <div class="sr-only">
+    <article>
+      <h1>Pomodoro.uz — Mahsuldorlikni Oshirish va Fokuslanish uchun Onlayn Pomodoro Taymeri</h1>
+      
+      <!-- HOME SECTION -->
+      <section id="seo-home">
+        <h2>HOME — Bosh Sahifa va Asosiy Imkoniyatlar</h2>
+        <p>
+          <strong>Pomodoro.uz</strong> — bu dars qilish, dasturlash, yozish va murakkab vazifalarga diqqatni to'liq jamlash uchun mo'ljallangan zamonaviy va bepul onlayn <em>Pomodoro focus timer</em> ilovasi. 
+          Ushbu platforma vaqtni to'g'ri boshqarish (Time Management), chalg'ishlarning oldini olish va ish unumdorligini 2x baravargacha oshirishga yordam beradi.
+        </p>
+
+        <h3>Pomodoro.uz ning Asosiy Avzalliklari va Funksiyalari:</h3>
+        <ul>
+          <li><strong>Moslashuvchan va Aqlli Pomodoro Taymer:</strong> 25 min ish, 5 min qisqa tanaffus (Short Break), 15 min uzun tanaffus (Long Break) va Fullscreen rejimlar.</li>
+          <li><strong>Lofi Chill Beats & Ambient Audio:</strong> YouTube Lofi treklar va tinchlantiruvchi fon musiqalari integratsiyasi.</li>
+          <li><strong>Notion Uslubidagi Vazifalar Boshqaruvi:</strong> Vazifalarni ro'yxatga olish, ularni taymerga biriktirish va bajarilish foizini kuzatish.</li>
+          <li><strong>Real-Vaqt Analitikasi va Streak:</strong> Umumiy diqqat vaqti, bajarilgan seanslar va uzluksiz faol kunlar zanjiri.</li>
+          <li><strong>Telegram Sinxronizatsiyasi:</strong> Bulutli saqlash va barcha qurilmalarda avtomatik ma'lumotlar sinxronizatsiyasi.</li>
+          <li><strong>10+ Estetik Vizual Mavzular:</strong> Dark Mode, Light, Neumorphism, Clay, OLED, Sepia, Mint, Lavender Clay va boshqalar.</li>
+        </ul>
+      </section>
+
+      <!-- SIMPLE PAGE SECTION -->
+      <section id="seo-simple-page">
+        <h2>SIMPLE PAGE — Minimalist Oddiy Taymer Sahifasi</h2>
+        <p>
+          <strong>Simple Page (Oddiy Rejim)</strong> — chalg'ituvchi unsurlarsiz, ortiqcha menyu va bezaklardan holi bo'lgan minimalist fokus taymer sahifasi. 
+          Ushbu rejim faqat taymer va eng zarur boshqaruv tugmalarini ko'rsatib, e'tiboringizni 100% bajarilayotgan topshiriqqa qaratishga yordam beradi.
+        </p>
+      </section>
+
+      <!-- PRIVACY POLICY SECTION -->
+      <section id="seo-privacy">
+        <h2>PRIVACY — Maxfiylik Siyosati (Privacy Policy)</h2>
+        <p>
+          Pomodoro.uz foydalanuvchilarning shaxsiy ma'lumotlari maxfiyligi va xavfsizligini oliy darajada qadrlaydi.
+        </p>
+        <ul>
+          <li><strong>Ma'lumotlar Yig'ilishi:</strong> Platformadan foydalanish uchun shaxsiy maxfiy ma'lumotlar talab qilinmaydi. Telegram Login orqali kirilganda faqat ochiq profil ma'lumotlari (Telegram ID, ism va username) identifikatsiya uchun ishlatiladi.</li>
+          <li><strong>Ma'lumotlarni Saqlash:</strong> Vazifalar va taymer sozlamalari brauzeringizning LocalStorage-da hamda xavfsiz shifrlangan bulutli ma'lumotlar bazasida saqlanadi.</li>
+          <li><strong>Uchinchi Shaxslarga Berilmasligi:</strong> Foydalanuvchi ma'lumotlari hech qachon uchinchi shaxslarga sotilmaydi va ulashilmaydi.</li>
+          <li><strong>Xavfsizlik:</strong> Saytdagi barcha aloqa va ma'lumotlar almashinuvi SSL/TLS xavfsizlik protokollari orqali shifrlanadi.</li>
+        </ul>
+      </section>
+
+      <!-- TERMS OF SERVICE SECTION -->
+      <section id="seo-terms">
+        <h2>TERMS — Foydalanish Shartlari (Terms of Service)</h2>
+        <p>
+          Pomodoro.uz platformasidan foydalanish orqali siz quyidagi foydalanish shartlariga rozilik bildirasiz:
+        </p>
+        <ul>
+          <li><strong>Bepul Foydalanish:</strong> Xizmat barcha foydalanuvchilar uchun ochiq va bepul taqdim etiladi.</li>
+          <li><strong>Mas'uliyat Cheklanishi:</strong> Pomodoro.uz mahsuldorlikni oshirish vositasi bo'lib, taqdim etilayotgan xizmatlar "qanday bo'lsa shunday" (as is) tamoyili bo'yicha beriladi.</li>
+          <li><strong>Intellektual Mulk:</strong> Platforma dizayni, kodi va brend elementlari mualliflik huquqi bilan himoyalangan.</li>
+        </ul>
+      </section>
+
+      <!-- COMMERCE SECTION -->
+      <section id="seo-commerce">
+        <h2>COMMERCE — Tijorat va Xizmatlar Shartlari</h2>
+        <p>
+          <strong>Pomodoro.uz</strong> — notijorat va ta'lim maqsadidagi mahsuldorlik loyihasidir.
+        </p>
+        <ul>
+          <li><strong>Bepul Xizmatlar:</strong> Taymer, lofi musiqa pleyeri, vazifalar checklisti va analitika funksiyalari to'liq bepul.</li>
+          <li><strong>Xayriya va Support:</strong> Platforma server va domain xarajatlarini qoplash uchun ixtiyoriy ravishda <strong>Tirikchilik.uz</strong> platformasi orqali loyihani moliyaviy qo'llab-quvvatlashingiz mumkin.</li>
+        </ul>
+      </section>
+
+      <!-- CONTACT SECTION -->
+      <section id="seo-contact">
+        <h2>CONTACT — Bog'lanish va Murojaat</h2>
+        <p>
+          Savol, taklif yoki hamkorlik yuzasidan biz bilan bog'lanishingiz mumkin:
+        </p>
+        <ul>
+          <li><strong>Dasturchi (Creator):</strong> <a href="https://t.me/bkzd19" target="_blank" rel="noopener">bkzd19 (Telegram)</a></li>
+          <li><strong>Rasmiy Telegram Bot:</strong> <a href="https://t.me/PomodoroUzBot" target="_blank" rel="noopener">@PomodoroUzBot</a></li>
+          <li><strong>Telegram Kanal:</strong> <a href="https://t.me/tutorbek" target="_blank" rel="noopener">@tutorbek</a></li>
+          <li><strong>Qo'llab-quvvatlash (Tirikchilik):</strong> <a href="https://tirikchilik.uz/tutorbek" target="_blank" rel="noopener">tirikchilik.uz/tutorbek</a></li>
+        </ul>
+      </section>
+
+      <!-- OFFICIAL LINKS & COPYRIGHT -->
+      <section id="seo-links-copyright">
+        <h2>Rasmiy Linklar va Mualliflik Huquqi</h2>
+        <nav aria-label="SEO Navigation Links">
+          <ul>
+            <li><a href="https://t.me/PomodoroUzBot" target="_blank">Telegram Bot (@PomodoroUzBot)</a></li>
+            <li><a href="https://t.me/tutorbek" target="_blank">Telegram Channel (@tutorbek)</a></li>
+            <li><a href="https://tirikchilik.uz/tutorbek" target="_blank">Tirikchilik Donation Page</a></li>
+            <li><a href="https://t.me/bkzd19" target="_blank">Made with 🥷🏻 by bkzd19</a></li>
+          </ul>
+        </nav>
+        <p>©Pomofocus 2019-2026. All Rights Reserved.</p>
+      </section>
+    </article>
+  </div>
+
+  <!-- MAIN SINGLE SCREEN WEB APP CONTAINER -->
+  <div class="app-container">
+    <!-- APP HEADER -->
+    <header class="app-header">
+      <div class="logo">
+        <img class="logo-img" src="logopomodoro.png" alt="Pomodoro.uz Logotipi">
+        <h1 class="logo-title">Pomodoro.uz</h1>
+      </div>
+      <div class="header-actions">
+        <div class="profile-menu-wrap">
+          <img src="animegirlicon-180.png" class="header-sitting-girl" alt="Header Mascot">
+          <a class="btn-header-login" id="headerGoogleLoginBtn" href="javascript:void(0)" onclick="loginWithTelegram()" style="display: none;">
+            <span>Kirish</span>
+          </a>
+          <button class="avatar-btn" id="profileMenuBtn" type="button" title="Profil menyusi">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="30" fill="#FFB703"/><path d="M14 14L22 26H12L14 14Z" fill="#FB8500"/><path d="M50 14L42 26H52L50 14Z" fill="#FB8500"/><circle cx="23" cy="32" r="4" fill="#023047"/><circle cx="41" cy="32" r="4" fill="#023047"/><circle cx="24" cy="31" r="1.5" fill="#FFF"/><circle cx="42" cy="31" r="1.5" fill="#FFF"/><ellipse cx="32" cy="38" rx="3" ry="2" fill="#FB8500"/><path d="M28 41C30 43 34 43 36 41" stroke="#023047" stroke-width="2" stroke-linecap="round"/><path d="M10 34H18M11 38H17M46 34H54M47 38H53" stroke="#023047" stroke-width="1.8" stroke-linecap="round"/></svg>
+          </button>
+          <div class="profile-menu" id="profileMenu" aria-hidden="true">
+            <div class="profile-menu-header">
+              <div class="profile-menu-name" id="profileMenuName">bkzd</div>
+              <div class="profile-menu-phone" id="profileMenuPhone">+998332220301</div>
+            </div>
+            <button class="profile-menu-item" id="loginMenuBtn" type="button" style="color: #6C63FF; display: none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><polyline points="10 17 15 12 10 7"></polyline><line x1="15" y1="12" x2="3" y2="12"></line></svg>
+              <span>Kirish / Login</span>
+            </button>
+            <button class="profile-menu-item" id="openAccountModalBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5Zm0 2c-4.42 0-8 2.24-8 5v1c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2v-1c0-2.76-3.58-5-8-5Z"></path></svg>
+              <span>Mening profilim</span>
+            </button>
+            <button class="profile-menu-item" id="openSettingsMenuBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+              <span>Sozlamalar</span>
+            </button>
+            <a class="profile-menu-item" id="supportMenuBtn" href="https://t.me/bkzd19" target="_blank" rel="noopener" style="text-decoration: none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+              <span>Qo'llab quvvatlash</span>
+            </a>
+            <button class="profile-menu-item" id="reportBugMenuBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+              <span>Xato haqida xabar berish</span>
+            </button>
+            <button class="profile-menu-item" id="logoutMenuBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"></path><path d="M10 17l5-5-5-5"></path><path d="M15 12H3"></path></svg>
+              <span>Chiqish</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- MAIN VIEWS VIEWPORT -->
+    <main class="app-views-viewport">
+      <!-- 1. FOCUS VIEW -->
+      <div class="app-view active" id="view-focus">
+        <div class="focus-grid">
+          <!-- TIMER CARD (NO SCROLL) -->
+          <section class="card timer-card">
+            <!-- FULLSCREEN BRAND LOGO (Top Left in Full Screen) -->
+            <div class="fullscreen-brand-logo" id="fullscreenBrandLogo">
+              <img class="logo-img" src="logopomodoro.png" alt="Pomodoro.uz Logotipi">
+              <span class="logo-title">Pomodoro.uz</span>
+            </div>
+
+            <div class="timer-header-row">
+              <div class="tabs-container">
+                <div class="tab-indicator" id="tabIndicator"></div>
+                <button class="tab-btn active" id="tabPomodoro" data-tab="pomodoro">Pomodoro</button>
+                <button class="tab-btn" id="tabShortBreak" data-tab="shortBreak">Qisqa <span class="hide-mobile">tanaffus</span></button>
+                <button class="tab-btn" id="tabLongBreak" data-tab="longBreak">Uzun <span class="hide-mobile">tanaffus</span></button>
+              </div>
+              <button class="timer-fullscreen-btn" id="toggleTimerFullscreenBtn" type="button" title="To'liq ekran rejimi">
+                <svg class="icon-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+                </svg>
+                <svg class="icon-compress" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div class="timer-section">
+              <div class="timer-wrapper" id="timerWrapper">
+                <div class="timer-display" id="timerDisplay">25:00</div>
+              </div>
+              <div class="session-label" id="sessionLabel">Diqqatni bir joyga jamlash vaqti!</div>
+            </div>
+
+            <div class="pomodoro-dots" id="pomDots"></div>
+
+            <div class="controls">
+              <button class="btn-primary" id="startBtn">START</button>
+              <button class="btn-reset" id="resetBtn">Qayta o'rnatish</button>
+            </div>
+
+            <!-- FULLSCREEN ATTACHED TASK LABEL (BELOW BUTTONS) -->
+            <div class="fullscreen-task-label" id="fullscreenTaskLabel"></div>
+          </section>
+
+          <!-- RIGHT COLUMN: ACTIVE TASK CARD + LOFI MUSIC PLAYER CARD + STATS CARD -->
+          <div class="focus-right-side">
+            <!-- STANDALONE HERO ACTIVE TASK CARD (ABOVE MUSIC PLAYER) -->
+            <!-- STANDALONE HERO ACTIVE TASK CARD (BOTTOM-LEFT BUTTONS REDESIGN) -->
+            <section class="card active-task-card" id="activeTaskBar">
+              <div class="active-task-top">
+                <div class="active-task-icon-box" id="activeTaskIconBox">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"></path><path d="M7 7h.01"></path></svg>
+                </div>
+                <div class="active-task-badge" id="activeTaskBadge">
+                  <span class="badge-dot"></span>
+                  <span id="activeTaskBadgeText">Biriktirilmagan</span>
+                </div>
+              </div>
+              <div class="active-task-body">
+                <span class="active-task-title" id="activeTaskName">Joriy taymer uchun vazifa biriktiring</span>
+              </div>
+              <div class="active-task-actions">
+                <button class="btn-detach-task is-hidden" id="detachTaskBtn" type="button" title="Vazifani ajratish">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                  <span class="btn-detach-text">Yechish</span>
+                </button>
+                <button class="btn-select-task" id="openTaskPickerBtn" type="button">
+                  <span>Tanlash</span>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </button>
+              </div>
+            </section>
+
+            <!-- EARLY 0ms ZERO-FLICKER DOM RESTORATION SCRIPT -->
+            <script>
+            (function syncInitialTimerAndTask() {
+              try {
+                const s = JSON.parse(localStorage.getItem('pomodo_settings') || '{}');
+                const st = JSON.parse(localStorage.getItem('pomodo_state') || '{}');
+                const tab = st.currentTab || 'pomodoro';
+                let mins = s.pomodoroTime || 25;
+                if (tab === 'shortBreak') mins = s.shortBreakTime || 5;
+                else if (tab === 'longBreak') mins = s.longBreakTime || 15;
+
+                let seconds = (st.timeLeft !== undefined && !st.isRunning) ? st.timeLeft : (mins * 60);
+                if (st.isRunning && st.endTime && st.endTime > Date.now()) {
+                  seconds = Math.round((st.endTime - Date.now()) / 1000);
+                }
+                const m = Math.floor(seconds / 60);
+                const sec = seconds % 60;
+                const displayStr = String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+                const timerEl = document.getElementById('timerDisplay');
+                if (timerEl) timerEl.textContent = displayStr;
+
+                const taskId = localStorage.getItem('pomodo_active_task_id');
+                const tasks = JSON.parse(localStorage.getItem('pomodo_tasks') || '[]');
+                const cardEl = document.getElementById('activeTaskBar');
+                const badgeTextEl = document.getElementById('activeTaskBadgeText');
+                const nameEl = document.getElementById('activeTaskName');
+                const detachBtn = document.getElementById('detachTaskBtn');
+                if (taskId && Array.isArray(tasks)) {
+                  const t = tasks.find(x => x.id === taskId || String(x.id) === String(taskId));
+                  if (t && !t.done) {
+                    if (cardEl) cardEl.classList.add('has-active-task');
+                    if (badgeTextEl) badgeTextEl.textContent = 'Fokusda';
+                    if (nameEl) nameEl.textContent = t.text;
+                    if (detachBtn) detachBtn.classList.remove('is-hidden');
+                  }
+                }
+              } catch(e) {}
+            })();
+            </script>
+
+            <!-- LOFI MUSIC PLAYER CARD (ULTRA COMPACT 2-ROW DESIGN) -->
+            <section class="card lofi-card" id="lofiCard">
+              <div class="lofi-header">
+                <div class="lofi-info">
+                  <div class="lofi-icon-wrapper" id="lofiIconWrapper">
+                    <div class="lofi-animated-waves">
+                      <span class="wave-bar"></span>
+                      <span class="wave-bar"></span>
+                      <span class="wave-bar"></span>
+                    </div>
+                    <svg class="lofi-disc-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="3"></circle></svg>
+                  </div>
+                  <div class="lofi-text">
+                    <h3>Lofi Chill Beats</h3>
+                    <p>Fokus va ish uchun musiqalar</p>
+                  </div>
+                </div>
+                <div class="lofi-controls">
+                  <button class="lofi-btn" id="lofiPrev" title="Oldingi tarona">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg>
+                  </button>
+                  <button class="lofi-btn play-btn" id="lofiPlayPause" title="Ijro / Pauza">
+                    <svg id="lofiPlayIcon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                    <svg id="lofiPauseIcon" class="is-hidden" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16"></rect><rect x="14" y="4" width="4" height="16"></rect></svg>
+                  </button>
+                  <button class="lofi-btn" id="lofiNext" title="Keyingi tarona">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="lofi-compact-bar">
+                <span class="lofi-time lofi-time--current" id="lofiCurrentTime">0:00</span>
+                <input class="lofi-progress__bar" type="range" id="lofiProgressBar" min="0" max="100" value="0" step="1">
+                <span class="lofi-time" id="lofiTotalTime">0:00</span>
+                
+                <div class="lofi-volume-compact">
+                  <button class="lofi-volume__btn" id="lofiMuteToggle" type="button" title="Ovozsiz qilish / yoqish">
+                    <span class="lofi-volume__icon" id="lofiVolIcon">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg>
+                    </span>
+                  </button>
+                  <div class="lofi-volume-slider-wrapper">
+                    <input type="range" id="lofiVolume" min="0" max="100" value="50">
+                  </div>
+                  <span class="lofi-vol-val" id="lofiVolVal" style="display: none;">50%</span>
+                </div>
+              </div>
+
+              <div id="yt-container">
+                <div id="ytplayer"></div>
+              </div>
+            </section>
+
+            <!-- SEPARATE STATS CARD UNDER MUSIC PLAYER -->
+            <section class="card stats-card">
+              <div class="stats-grid">
+                <div class="stat-box">
+                  <div class="stat-val" id="sessionsCompleted">0</div>
+                  <div class="stat-label">Bajarilgan Pomodorolar</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-val" id="totalFocus">0m</div>
+                  <div class="stat-label">Jami diqqat vaqti</div>
+                </div>
+                <div class="stat-box clickable-stat" id="openPomModalBtn" title="Maqsadni o'zgartirish">
+                  <div class="stat-val" id="targetStat">0 / 4</div>
+                  <div class="stat-label">Maqsad</div>
+                </div>
+                <div class="stat-box">
+                  <div class="stat-val" id="activeDaysStat">0 Kun</div>
+                  <div class="stat-label">Faol kunlar</div>
+                </div>
+              </div>
+            </section>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. TASK VIEW (Notion-Style Minimalist Checklist) -->
+      <div class="app-view" id="view-task">
+        <div class="task-view-container scrollable-area">
+          <div class="notion-tasks-header">
+            <div class="notion-tasks-title-row">
+              <h2 class="notion-tasks-title">Vazifalar</h2>
+              <span class="notion-tasks-badge" id="tasksCountBadge">0 / 0</span>
+            </div>
+          </div>
+
+          <!-- GUEST AUTH OVERLAY BANNER FOR TASKS (Hidden when logged in) -->
+          <div class="guest-banner" id="taskGuestBanner">
+            <div class="guest-banner-content">
+              <div class="guest-text">
+                <h3>Vazifalar bo'limi</h3>
+                <p>O'z vazifalaringizni yaratish, saqlash hamda ularni pomodorolarga ulash uchun iltimos Telegram orqali tizimga kiring.</p>
+              </div>
+              <a class="btn-header-login" href="javascript:void(0)" onclick="loginWithTelegram()" id="taskGoogleLoginBtn">
+                <span>Kirish</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="notion-tasks-wrapper">
+            <div class="notion-task-list" id="taskList">
+              <!-- Dynamically rendered Notion-style task rows -->
+            </div>
+            
+            <button class="notion-add-task-btn" id="notionAddTaskBtn" type="button">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+              <span>Vazifa qo'shish</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. PROGRESS VIEW -->
+      <div class="app-view" id="view-progress">
+        <div class="progress-view-container scrollable-area">
+
+          <!-- GUEST AUTH OVERLAY BANNER (Hidden when logged in) -->
+          <div class="guest-banner" id="progressGuestBanner">
+            <div class="guest-banner-content">
+              <div class="guest-text">
+                <h3>Hisobot va Analitika bo'limi</h3>
+                <p>Ushbu bo'limdagi barcha real-time vaqt statistikasi, grafiklar va streak ma'lumotlarini ko'rish uchun iltimos Telegram orqali tizimga kiring.</p>
+              </div>
+              <a class="btn-header-login" href="javascript:void(0)" onclick="loginWithTelegram()" id="progressGoogleLoginBtn">
+                <span>Kirish</span>
+              </a>
+            </div>
+          </div>
+
+          <!-- PROGRESS SUB-TABS NAVIGATION -->
+          <div class="progress-subtabs">
+            <button class="progress-tab-btn active" data-progress-tab="summary" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+              <span>Umumiy natijalar</span>
+            </button>
+            <button class="progress-tab-btn" data-progress-tab="detail" type="button">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              <span>Batafsil tarix</span>
+            </button>
+          </div>
+
+          <!-- SUB-TAB 1: ACTIVITY SUMMARY -->
+          <div class="progress-tab-content active" id="progress-tab-summary">
+
+            <!-- SUMMARY STATS CARDS -->
+            <div class="progress-section">
+              <h2 class="section-heading">Faoliyat xulosasi</h2>
+              <div class="summary-cards">
+                <div class="summary-card">
+                  <div class="summary-card-icon time-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  </div>
+                  <div class="summary-card-body">
+                    <strong id="reportHoursFocused">0</strong>
+                    <span>Diqqat vaqti</span>
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="summary-card-icon days-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  </div>
+                  <div class="summary-card-body">
+                    <strong id="reportDaysAccessed">0</strong>
+                    <span>Faol kunlar</span>
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="summary-card-icon streak-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#E05624" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 17c1.38 0 2.5-1.12 2.5-2.5 0-.61-.22-1.17-.58-1.61L12 11.5l-.92 1.39c-.36.44-.58 1-.58 1.61z"/><path d="M12 2C6.5 2 2 6.5 2 12c0 4.42 2.87 8.17 6.84 9.5.42.14.86-.18.86-.62v-.78c0-.36-.2-.69-.52-.84-2.61-1.22-4.18-3.92-3.87-6.9.37-3.6 3.42-6.4 7.04-6.35 3.82.05 6.9 3.19 6.85 7.01-.03 2.54-1.44 4.79-3.56 5.96-.34.19-.54.55-.54.94v.33c0 .46.46.79.9.64C19.16 19.6 22 16.14 22 12c0-5.5-4.5-10-10-10z"/></svg>
+                  </div>
+                  <div class="summary-card-body">
+                    <strong id="reportDayStreak">0</strong>
+                    <span>Ketma-ket kunlar</span>
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="summary-card-icon trophy-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#F4A261" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+                  </div>
+                  <div class="summary-card-body">
+                    <strong id="reportBestStreak">0</strong>
+                    <span>Rekord seriya</span>
+                  </div>
+                </div>
+                <div class="summary-card">
+                  <div class="summary-card-icon target-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#457B9D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+                  </div>
+                  <div class="summary-card-body">
+                    <strong id="reportCompletionRate">0%</strong>
+                    <span>Bajarish foizi</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- FOCUS HOURS CHART (Bugun, Week, Month, Year) -->
+            <div class="progress-section card">
+              <div class="report-section-title focus-title">
+                <h2>Diqqat vaqti tahlili</h2>
+                <div class="report-period-switch">
+                  <button data-report-period="daily" type="button">Bugun</button>
+                  <button class="active" data-report-period="weekly" type="button">Hafta</button>
+                  <button data-report-period="monthly" type="button">Oy</button>
+                  <button data-report-period="yearly" type="button">Yil</button>
+                </div>
+              </div>
+              <div class="report-week-nav">
+                <button class="week-nav-btn" id="prevWeekBtn" type="button" title="Oldingi davr">‹</button>
+                <span class="week-nav-label" id="currentWeekLabel">Ushbu hafta</span>
+                <button class="week-nav-btn" id="nextWeekBtn" type="button" title="Keyingi davr">›</button>
+              </div>
+              <div class="focus-chart-wrapper">
+                <div id="canvasChartContainer" style="width: 100%; height: 220px; position: relative;">
+                  <canvas id="focusHoursChartCanvas"></canvas>
+                </div>
+                <div class="focus-chart-area" id="fallbackChartArea" style="display: none; width: 100%;">
+                  <div class="chart-y-axis" id="chartYAxis"></div>
+                  <div class="focus-chart" id="focusChart"></div>
+                </div>
+              </div>
+              <div class="report-total-row">
+                <span>Jami diqqat vaqti</span>
+                <strong id="reportTotalTime">00:00</strong>
+              </div>
+            </div>
+
+            <!-- TASK & PROJECT BREAKDOWN -->
+            <div class="progress-section card">
+              <div class="report-section-title">
+                <h2>Vazifalar bo'yicha taqsimot</h2>
+              </div>
+              <div id="reportTaskBreakdown" class="task-breakdown-list">
+                <div class="task-empty">Topshiriqlar ma'lumoti yuklanmoqda...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- SUB-TAB 2: DETAIL -->
+          <div class="progress-tab-content" id="progress-tab-detail">
+            <div class="progress-section card">
+              <div class="report-section-title detail-header-title">
+                <h2>Bajarilgan sessiyalar tarixi</h2>
+                <button class="btn-export-csv" id="exportStatsCsvBtn" type="button" title="Tarixni CSV formatida yuklab olish">
+                  <span>📥 CSV yuklab olish</span>
+                </button>
+              </div>
+              <div class="detail-table">
+                <div class="detail-row detail-head">
+                  <span>SANA VA VAQT</span>
+                  <span>LOYIHA / VAZIFA</span>
+                  <span>DAQIQALAR</span>
+                </div>
+                <div id="reportDetailRows"></div>
+              </div>
+              <div style="text-align: center; margin-top: 16px;">
+                <button class="notion-add-task-btn" id="loadMoreSessionsBtn" type="button" style="display: none; margin: 0 auto;">
+                  <span>Ko'proq ko'rsat</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. MINIMALIST LOGIN VIEW (login?redirect=/) -->
+      <div class="app-view" id="view-login">
+        <div class="login-view-container scrollable-area">
+          <div class="minimal-login-card">
+            
+            <!-- Logo Icon -->
+            <div class="minimal-login-logo">
+              <img src="logopomodoro.png" alt="Pomodoro.uz Logo" class="minimal-logo-img" />
+            </div>
+
+            <!-- Title -->
+            <h2 class="minimal-login-title">Kodni Kiriting</h2>
+
+            <!-- Subtitle -->
+            <p class="minimal-login-subtitle">
+              <a href="https://t.me/PomodoroUzBot" target="_blank" rel="noopener" class="minimal-bot-link">@PomodoroUzBot</a> telegram botiga kiring va 1 daqiqalik kodingizni oling.
+            </p>
+
+            <!-- 6 Pin Digit Inputs -->
+            <div class="otp-pin-container" id="otpPinContainer">
+              <input type="text" maxlength="1" class="otp-pin-box" data-index="0" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-pin-box" data-index="1" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-pin-box" data-index="2" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-pin-box" data-index="3" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-pin-box" data-index="4" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+              <input type="text" maxlength="1" class="otp-pin-box" data-index="5" inputmode="numeric" pattern="[0-9]*" autocomplete="off" />
+            </div>
+
+            <div id="otpStatusMsg" class="otp-status-msg"></div>
+
+            <!-- Telegram Bot Action Button -->
+            <a href="https://t.me/PomodoroUzBot" target="_blank" rel="noopener" class="minimal-bot-btn">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.67-.54.83-1.1.52l-3.02-2.23-1.46 1.4c-.16.16-.3.3-.61.3l.21-3.06 5.57-5.03c.24-.22-.05-.34-.37-.13l-6.88 4.33-2.97-.93c-.65-.2-.66-.65.14-.96l11.6-4.47c.54-.2 1.01.13.86.98z"/></svg>
+              <span>@PomodoroUzBot'ga o'tish</span>
+            </a>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. SETTINGS VIEW -->
+      <div class="app-view" id="view-settings">
+        <div class="settings-view-container scrollable-area">
+          <h2 class="view-title">Sozlamalar</h2>
+
+          <!-- Themes -->
+          <h3 class="settings-section-title">Tashqi ko'rinish va mavzular</h3>
+          <div class="form-group">
+            <div class="theme-grid">
+              <button class="theme-option" data-theme-id="clay"><span class="theme-icon-svg"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.2-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H17c2.8 0 5-2.2 5-5 0-5.5-4.5-9.6-10-9.6z"></path></svg></span><span>Clay</span></button>
+              <button class="theme-option" data-theme-id="clay-dark"><span class="theme-icon-svg"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.2-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H17c2.8 0 5-2.2 5-5 0-5.5-4.5-9.6-10-9.6z"></path></svg></span><span>Clay Qorong'u</span></button>
+              <button class="theme-option" data-theme-id="neumorphism"><span class="theme-icon-svg"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4" fill="#E6EAEF" stroke="#B8C4D0"></rect><rect x="8" y="8" width="8" height="8" rx="2" fill="#E6EAEF" stroke="#94A3B8"></rect></svg></span><span>Neumorfizm</span></button>
+              <button class="theme-option" data-theme-id="sand-sage"><span class="theme-icon-svg"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2z"></path><path d="M12 6a6 6 0 0 1 6 6c0 3.3-2.7 6-6 6" fill="rgba(181,201,138,0.5)"></path></svg></span><span>Sand & Sage</span></button>
+            </div>
+          </div>
+
+          <!-- Sound & Volume -->
+          <h3 class="settings-section-title">Signal ovozi</h3>
+          <div class="sound-grid" id="soundGrid"></div>
+
+          <!-- Volume Section -->
+          <h3 class="settings-section-title">Ovoz balandligi</h3>
+          <div class="volume-control">
+            <span class="volume-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon></svg></span>
+            <input type="range" id="volumeSlider" min="0" max="100" value="70">
+            <span class="volume-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path></svg></span>
+            <span class="vol-val" id="volLabel">70%</span>
+          </div>
+
+          <!-- Time Durations -->
+          <h3 class="settings-section-title">Vaqt davomiyligi (daqiqalarda)</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Pomodoro</label>
+              <input type="number" class="form-input" id="setPomodoro" min="1" max="60" value="25">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Qisqa tanaffus</label>
+              <input type="number" class="form-input" id="setShortBreak" min="1" max="30" value="5">
+            </div>
+            <div class="form-group">
+              <label class="form-label">Uzun tanaffus</label>
+              <input type="number" class="form-input" id="setLongBreak" min="1" max="60" value="15">
+            </div>
+          </div>
+          <button class="btn-primary-small" id="saveSettingsBtn" type="button" style="margin-top: 14px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            <span>Vaqtlarni saqlash</span>
+          </button>
+
+          <!-- Platform Links, Pages & Legal Info Section -->
+          <div class="platform-links-section" style="margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--border);">
+            <h3 class="settings-section-title">Sahifalar va Ma'lumotlar</h3>
+            
+            <!-- 6 Pages Navigation Buttons Grid -->
+            <div class="settings-pages-grid">
+              <button type="button" onclick="openModal('homeInfoModal')" class="settings-page-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <span>HOME</span>
+              </button>
+              <button type="button" onclick="openModal('privacyInfoModal')" class="settings-page-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>PRIVACY</span>
+              </button>
+              <button type="button" onclick="openModal('termsInfoModal')" class="settings-page-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E76F51" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <span>TERMS</span>
+              </button>
+              <button type="button" onclick="openModal('commerceInfoModal')" class="settings-page-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4A261" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                <span>COMMERCE</span>
+              </button>
+              <button type="button" onclick="openModal('contactInfoModal')" class="settings-page-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3A86EF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <span>CONTACT</span>
+              </button>
+              <button type="button" onclick="openModal('simplePageInfoModal')" class="settings-page-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E91E63" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                <span>SIMPLE PAGE</span>
+              </button>
+            </div>
+
+            <h3 class="settings-section-title" style="margin-top: 16px;">Rasmiy Havolalar</h3>
+            <div class="settings-links-grid">
+              <a href="https://t.me/PomodoroUzBot" target="_blank" rel="noopener" class="settings-link-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.67-.54.83-1.1.52l-3.02-2.23-1.46 1.4c-.16.16-.3.3-.61.3l.21-3.06 5.57-5.03c.24-.22-.05-.34-.37-.13l-6.88 4.33-2.97-.93c-.65-.2-.66-.65.14-.96l11.6-4.47c.54-.2 1.01.13.86.98z"/></svg>
+                <span>Telegram Bot</span>
+              </a>
+              <a href="https://t.me/tutorbek" target="_blank" rel="noopener" class="settings-link-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="13" y2="13"></line></svg>
+                <span>Telegram Channel</span>
+              </a>
+              <a href="https://tirikchilik.uz/tutorbek" target="_blank" rel="noopener" class="settings-link-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E76F51" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                <span style="color: #E76F51;">Tirikchilik</span>
+              </a>
+              <a href="https://t.me/bkzd19" target="_blank" rel="noopener" class="settings-link-card">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8E44AD" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <span>Made with 🥷🏻 by bkzd19</span>
+              </a>
+            </div>
+
+            <!-- Copyright Footer -->
+            <div class="app-footer-credits" style="text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--border); font-size: 12px; color: var(--text-sub);">
+              <p>Made with 🥷🏻 by <a href="https://t.me/bkzd19" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">bkzd19</a></p>
+              <p style="margin-top: 4px; opacity: 0.8;">©Pomofocus 2019-2026. All Rights Reserved.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- FIXED BOTTOM NAVIGATION BAR -->
+    <nav class="bottom-nav">
+      <div class="bottom-nav-inner">
+        <button class="bottom-nav-btn active" data-view="focus" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          <span>Pomodoro</span>
+        </button>
+        <button class="bottom-nav-btn" data-view="task" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          <span>Vazifalar</span>
+        </button>
+        <button class="bottom-nav-btn" data-view="progress" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 20V10"></path><path d="M12 20V4"></path><path d="M6 20v-6"></path></svg>
+          <span>Hisobot</span>
+        </button>
+        <button class="bottom-nav-btn" data-view="settings" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Sozlamalar</span>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- MODALS PRESERVED -->
+
+  <!-- ACCOUNT MODAL -->
+  <div class="modal-overlay account-overlay" id="accountModal">
+    <div class="modal-content account-modal-content">
+      <div class="bottom-sheet-handle"></div>
+      <button class="modal-close account-close" data-close-modal="accountModal">✕</button>
+      <h2 class="account-title">MENING PROFILIM</h2>
+      
+      <div class="account-profile-header">
+        <div class="account-avatar">
+          <img id="accountAvatar" alt="" src="">
+          <span id="accountAvatarFallback">☕</span>
+        </div>
+        <div class="account-user-summary">
+          <h3 id="accountProfileFullName" class="account-profile-name">Foydalanuvchi</h3>
+          <span id="accountProfileUsername" class="account-username-badge">@username</span>
+        </div>
+      </div>
+
+      <!-- USER TELEGRAM & ACCOUNT DETAILS GRID -->
+      <div class="account-details-grid">
+        <div class="account-detail-item">
+          <span class="detail-label">Ismi</span>
+          <span class="detail-value" id="accFirstName">-</span>
+        </div>
+        <div class="account-detail-item">
+          <span class="detail-label">Familiyasi</span>
+          <span class="detail-value" id="accLastName">-</span>
+        </div>
+        <div class="account-detail-item">
+          <span class="detail-label">Telefon raqami</span>
+          <span class="detail-value" id="accPhoneNumber">-</span>
+        </div>
+        <div class="account-detail-item">
+          <span class="detail-label">Telegram ID</span>
+          <span class="detail-value" id="accTelegramId">-</span>
+        </div>
+        <div class="account-detail-item">
+          <span class="detail-label">Username</span>
+          <span class="detail-value" id="accUsername">-</span>
+        </div>
+        <div class="account-detail-item">
+          <span class="detail-label">Til kodi</span>
+          <span class="detail-value" id="accLanguageCode">-</span>
+        </div>
+        <div class="account-detail-item">
+          <span class="detail-label">Yaratilgan sana</span>
+          <span class="detail-value" id="accCreatedAt">-</span>
+        </div>
+        <div class="account-detail-item">
+          <span class="detail-label">Yangilangan sana</span>
+          <span class="detail-value" id="accUpdatedAt">-</span>
+        </div>
+      </div>
+
+      <!-- EDITABLE EMAIL FIELD -->
+      <div class="account-email-section">
+        <label class="account-email-label" for="accountEmailInput">Email manzili</label>
+        <div class="account-email-row">
+          <input class="account-email-input" id="accountEmailInput" type="email" placeholder="Emailingizni kiriting..." autocomplete="email">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+        </div>
+      </div>
+
+      <!-- CUTE AVATAR SELECTION GRID -->
+      <div class="account-avatar-picker-section">
+        <label class="account-avatar-label">Avatarni tanlang</label>
+        <div class="avatar-grid" id="accountAvatarGrid"></div>
+      </div>
+
+      <div class="account-footer" style="display: flex; gap: 8px; justify-content: space-between; align-items: center;">
+        <button class="btn-danger-small" id="deleteAccountModalBtn" type="button" style="padding: 10px 14px; font-size: 13px; margin: 0;">Accountni o'chirish</button>
+        <div style="display: flex; gap: 8px;">
+          <button class="account-cancel" data-close-modal="accountModal" type="button">Bekor qilish</button>
+          <button class="account-save" id="saveAccountBtn" type="button">Saqlash</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ADD TASK MODAL -->
+  <div class="modal-overlay" id="addTaskModal">
+    <div class="modal-content">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>Yangi vazifa qo'shish</h2>
+        <button class="modal-close" data-close-modal="addTaskModal">✕</button>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Vazifa nomi</label>
+        <textarea class="form-input" id="taskModalInput" placeholder="Nima ish bajarilishi kerak..." rows="2" style="resize: vertical; min-height: 48px; font-family: inherit;"></textarea>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-secondary" data-close-modal="addTaskModal">Bekor qilish</button>
+        <button class="btn-primary-small" id="addTaskBtn">Qo'shish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- POMODORO DAILY TARGET MODAL -->
+  <div class="modal-overlay" id="pomModal">
+    <div class="modal-content" style="max-width: 400px; padding: 24px 20px;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>Pomodoro soni</h2>
+        <button class="modal-close" data-close-modal="pomModal">✕</button>
+      </div>
+      <p class="pom-modal-copy" style="font-size: 13.5px; color: var(--text-sub); margin-bottom: 16px;">Nechta Pomodoro bajarmoqchisiz?</p>
+      <div class="pom-picker" style="display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 12px;">
+        <button class="pom-picker-btn" data-pom-target-delta="-1" type="button" style="width: 44px; height: 44px; border-radius: 12px; font-size: 20px; font-weight: 700; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-main); cursor: pointer;">−</button>
+        <div class="pom-picker-val" id="pomPickerVal" style="font-size: 28px; font-weight: 800; color: var(--text-main); min-width: 40px; text-align: center;">4</div>
+        <button class="pom-picker-btn" data-pom-target-delta="1" type="button" style="width: 44px; height: 44px; border-radius: 12px; font-size: 20px; font-weight: 700; background: var(--bg-surface); border: 1px solid var(--border); color: var(--text-main); cursor: pointer;">+</button>
+      </div>
+      <div class="pom-picker-hint" id="pomPickerTime" style="font-size: 12px; color: var(--text-sub); text-align: center; margin-bottom: 20px;">= ~100 daqiqa fokus</div>
+      <div class="modal-footer" style="display: flex; gap: 10px; justify-content: space-between;">
+        <button class="btn-secondary" data-close-modal="pomModal" type="button">Bekor qilish</button>
+        <button class="btn-primary-small" id="savePomTargetBtn" type="button">Saqlash</button>
+      </div>
+    </div>
+  </div>
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-content">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>Sozlamalar</h2>
+        <button class="modal-close" data-close-modal="settingsModal">✕</button>
+      </div>
+      <p style="margin-bottom:15px; color: var(--text-sub);">Sozlamalar bo'limi ham to'g'ridan-to'g'ri Sozlamalar menyusida mavjud!</p>
+      <div class="modal-footer">
+        <button class="btn-primary-small" data-close-modal="settingsModal">Tushunarli</button>
+      </div>
+    </div>
+  </div>
+
+
+
+  <!-- METRIC INFO EXPLANATION MODAL -->
+  <div class="modal-overlay" id="metricInfoModal">
+    <div class="modal-content metric-info-modal-content">
+      <div class="bottom-sheet-handle"></div>
+      <h3 class="metric-info-title" id="metricInfoTitle">Ko'rsatkich ma'nosi</h3>
+      <p class="metric-info-text" id="metricInfoText"></p>
+      <button class="btn-primary-small metric-info-close-btn" data-close-modal="metricInfoModal" type="button">Tushunarli</button>
+    </div>
+  </div>
+
+  <!-- TASK PICKER MODAL -->
+  <div class="modal-overlay" id="taskPickerModal">
+    <div class="modal-content" style="max-width: 440px; padding: 24px 20px;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>Vazifani tanlang</h2>
+        <button class="modal-close" data-close-modal="taskPickerModal">✕</button>
+      </div>
+      <p style="font-size: 13px; color: var(--text-sub); margin-bottom: 12px;">Taymerni ulash uchun faol vazifalaringizdan birini tanlang:</p>
+      <div class="task-picker-list" id="taskPickerList" style="max-height: 280px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; margin-bottom: 16px;"></div>
+      <div class="modal-footer" style="display: flex; gap: 10px; justify-content: space-between;">
+        <button class="btn-secondary" id="unselectTaskBtn" type="button" style="font-size: 12px;">Vazifasiz (Umumiy fokus)</button>
+        <button class="btn-primary-small" id="pickerAddTaskBtn" type="button" style="font-size: 13px;">+ Vazifa qo'shish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CUSTOM CONFIRMATION MODAL -->
+  <div class="modal-overlay" id="confirmModal">
+    <div class="modal-content confirm-modal-content">
+      <div class="bottom-sheet-handle"></div>
+      <div class="confirm-icon-box" id="confirmModalIcon">🗑️</div>
+      <h3 class="confirm-title" id="confirmModalTitle">Accountni o'chirish</h3>
+      <p class="confirm-text" id="confirmModalText">Haqiqatdan ham accountingizni o'chirmoqchimisiz? Bu amalni ortga qaytarib bo'lmaydi.</p>
+      <div class="confirm-footer">
+        <button class="confirm-btn-cancel" id="confirmModalCancelBtn" type="button">Bekor qilish</button>
+        <button class="confirm-btn-action" id="confirmModalOkBtn" type="button">O'chirish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE INFO MODALS (HOME, PRIVACY, TERMS, COMMERCE, CONTACT, SIMPLE PAGE) -->
+  <!-- 1. HOME MODAL -->
+  <div class="modal-overlay" id="homeInfoModal">
+    <div class="modal-content" style="max-width: 520px; padding: 24px 20px; max-height: 85vh; overflow-y: auto;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>🏠 HOME — Bosh Sahifa</h2>
+        <button class="modal-close" data-close-modal="homeInfoModal">✕</button>
+      </div>
+      <div class="modal-body" style="font-size: 14px; line-height: 1.6; color: var(--text-main); margin-top: 10px;">
+        <p><strong>Pomodoro.uz</strong> — bu dars qilish, dasturlash, yozish va murakkab vazifalarga diqqatni to'liq jamlash uchun mo'ljallangan zamonaviy va bepul onlayn Pomodoro focus timer platformasidir.</p>
+        <h4 style="margin-top: 14px; margin-bottom: 6px; font-size: 15px; font-weight: 700;">Asosiy imkoniyatlar:</h4>
+        <ul style="padding-left: 20px; margin-bottom: 14px;">
+          <li><strong>Pomodoro Taymer:</strong> 25/5/15 daqiqalik intervallar va Fullscreen rejimi.</li>
+          <li><strong>Lofi Musiqa:</strong> Youtube Lofi Chill Beats va tinchlantiruvchi fondagi treklar.</li>
+          <li><strong>Vazifalar Boshqaruvi:</strong> Notion uslubidagi vazifalar ro'yxati.</li>
+          <li><strong>Analitika:</strong> Real-vaqt statistikasi va Streak faol kunlar zanjiri.</li>
+          <li><strong>Telegram Sinxronizatsiya:</strong> Qurilmalar o'rtasida ma'lumotlarni avto-sinxronlash.</li>
+        </ul>
+      </div>
+      <div class="modal-footer" style="margin-top: 16px;">
+        <button class="btn-primary-small" data-close-modal="homeInfoModal" type="button">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2. PRIVACY MODAL -->
+  <div class="modal-overlay" id="privacyInfoModal">
+    <div class="modal-content" style="max-width: 520px; padding: 24px 20px; max-height: 85vh; overflow-y: auto;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>🔒 PRIVACY — Maxfiylik Siyosati</h2>
+        <button class="modal-close" data-close-modal="privacyInfoModal">✕</button>
+      </div>
+      <div class="modal-body" style="font-size: 14px; line-height: 1.6; color: var(--text-main); margin-top: 10px;">
+        <p>Pomodoro.uz foydalanuvchilar maxfiyligini 100% himoya qiladi:</p>
+        <ul style="padding-left: 20px; margin-top: 8px;">
+          <li><strong>Telegram Autentifikatsiya:</strong> Faqat ochiq profil ma'lumotlari (Telegram ID, ism, username) identichnost uchun olinadi. Maxfiy kalitlar va parollar saqlanmaydi.</li>
+          <li><strong>Ma'lumotlar xavfsizligi:</strong> Vazifa va statistikalar LocalStorage va shifrlangan bulutda saqlanadi.</li>
+          <li><strong>Uchinchi shaxslarga berilmaslik:</strong> Sizning shaxsiy ma'lumotlaringiz sotilmaydi va ulashilmaydi.</li>
+          <li><strong>SSL Shifrlash:</strong> Server bilan barcha aloqalar HTTPS/TLS orqali himoyalangan.</li>
+        </ul>
+      </div>
+      <div class="modal-footer" style="margin-top: 16px;">
+        <button class="btn-primary-small" data-close-modal="privacyInfoModal" type="button">Tushunarli</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3. TERMS MODAL -->
+  <div class="modal-overlay" id="termsInfoModal">
+    <div class="modal-content" style="max-width: 520px; padding: 24px 20px; max-height: 85vh; overflow-y: auto;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>📜 TERMS — Foydalanish Shartlari</h2>
+        <button class="modal-close" data-close-modal="termsInfoModal">✕</button>
+      </div>
+      <div class="modal-body" style="font-size: 14px; line-height: 1.6; color: var(--text-main); margin-top: 10px;">
+        <p>Pomodoro.uz xizmatidan foydalanish shartlari:</p>
+        <ul style="padding-left: 20px; margin-top: 8px;">
+          <li><strong>Bepul xizmat:</strong> Barcha vositalardan bepul va cheklovsiz foydalanishingiz mumkin.</li>
+          <li><strong>Foydalanish tartibi:</strong> Platformadan o'quv, ish va shaxsiy unumdorlikni oshirish yo'lida foydalaniladi.</li>
+          <li><strong>Intellektual Mulk:</strong> Pomodoro.uz dizayni, brend kodi va mualliflik huquqlari himoyalangan.</li>
+        </ul>
+      </div>
+      <div class="modal-footer" style="margin-top: 16px;">
+        <button class="btn-primary-small" data-close-modal="termsInfoModal" type="button">Roziman</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4. COMMERCE MODAL -->
+  <div class="modal-overlay" id="commerceInfoModal">
+    <div class="modal-content" style="max-width: 520px; padding: 24px 20px; max-height: 85vh; overflow-y: auto;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>💳 COMMERCE — Tijorat Shartlari</h2>
+        <button class="modal-close" data-close-modal="commerceInfoModal">✕</button>
+      </div>
+      <div class="modal-body" style="font-size: 14px; line-height: 1.6; color: var(--text-main); margin-top: 10px;">
+        <p><strong>Pomodoro.uz</strong> — notijorat loyiha bo'lib, platformaning asosiy imkoniyatlari mutlaqo bepul.</p>
+        <p style="margin-top: 10px;">Loyihani rivojlantirish va server xarajatlarini qoplashga hissa qo'shishni istasangiz, ixtiyoriy ravishda <a href="https://tirikchilik.uz/tutorbek" target="_blank" style="color: #E76F51; font-weight: 600;">Tirikchilik.uz</a> orqali qo'llab-quvvatlashingiz mumkin.</p>
+      </div>
+      <div class="modal-footer" style="margin-top: 16px;">
+        <button class="btn-primary-small" data-close-modal="commerceInfoModal" type="button">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 5. CONTACT MODAL -->
+  <div class="modal-overlay" id="contactInfoModal">
+    <div class="modal-content" style="max-width: 520px; padding: 24px 20px; max-height: 85vh; overflow-y: auto;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>📞 CONTACT — Bog'lanish</h2>
+        <button class="modal-close" data-close-modal="contactInfoModal">✕</button>
+      </div>
+      <div class="modal-body" style="font-size: 14px; line-height: 1.6; color: var(--text-main); margin-top: 10px;">
+        <p>Biz bilan bog'lanish va savol hamda takliflar yuborish uchun rasmiy havolalar:</p>
+        <ul style="padding-left: 20px; margin-top: 10px;">
+          <li><strong>Dasturchi (Telegram):</strong> <a href="https://t.me/bkzd19" target="_blank" style="color: var(--primary); font-weight: 600;">@bkzd19</a></li>
+          <li><strong>Rasmiy Telegram Bot:</strong> <a href="https://t.me/PomodoroUzBot" target="_blank" style="color: var(--primary); font-weight: 600;">@PomodoroUzBot</a></li>
+          <li><strong>Telegram Kanal:</strong> <a href="https://t.me/tutorbek" target="_blank" style="color: var(--primary); font-weight: 600;">@tutorbek</a></li>
+          <li><strong>Tirikchilik:</strong> <a href="https://tirikchilik.uz/tutorbek" target="_blank" style="color: #E76F51; font-weight: 600;">tirikchilik.uz/tutorbek</a></li>
+        </ul>
+      </div>
+      <div class="modal-footer" style="margin-top: 16px;">
+        <button class="btn-primary-small" data-close-modal="contactInfoModal" type="button">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. SIMPLE PAGE MODAL -->
+  <div class="modal-overlay" id="simplePageInfoModal">
+    <div class="modal-content" style="max-width: 520px; padding: 24px 20px; max-height: 85vh; overflow-y: auto;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2>⚡ SIMPLE PAGE — Minimalist Rejim</h2>
+        <button class="modal-close" data-close-modal="simplePageInfoModal">✕</button>
+      </div>
+      <div class="modal-body" style="font-size: 14px; line-height: 1.6; color: var(--text-main); margin-top: 10px;">
+        <p><strong>Simple Page</strong> — bu e'tiboringizni chalg'itadigan barcha fon va menyulardan holi bo'lgan sof 25 daqiqalik Pomodoro foydalanish rejimi.</p>
+        <p style="margin-top: 8px;">Ushbu rejim orqali to'liq ekran (Fullscreen) formatida vazifaga to'liq sho'ng'ishingiz mumkin.</p>
+      </div>
+      <div class="modal-footer" style="margin-top: 16px;">
+        <button class="btn-primary-small" data-close-modal="simplePageInfoModal" type="button">Yopish</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. BUG REPORT MODAL -->
+  <div class="modal-overlay" id="bugReportModal">
+    <div class="modal-content" style="max-width: 520px; padding: 24px 20px; max-height: 90vh; overflow-y: auto;">
+      <div class="bottom-sheet-handle"></div>
+      <div class="modal-header">
+        <h2 style="display: flex; align-items: center; gap: 8px; font-size: 18px;">
+          <span>🚨</span> Xato haqida xabar berish
+        </h2>
+        <button class="modal-close" data-close-modal="bugReportModal">✕</button>
+      </div>
+      <div class="modal-body" style="margin-top: 12px;">
+        <p style="font-size: 13.5px; color: var(--text-sub); line-height: 1.5; margin-bottom: 16px;">
+          Sayt yoki botda uchragan muammo va kamchiliklarni bevosita adminga yuboring.
+        </p>
+
+        <!-- User Info Card -->
+        <div id="bugReportUserCard" style="background: var(--bg-surface); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 16px; font-size: 13px; color: var(--text-main);">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+            <strong id="bugReportUserName">Foydalanuvchi: -</strong>
+            <span id="bugReportUserPhone" style="color: var(--text-sub); font-size: 12px;">Tel: -</span>
+          </div>
+          <div style="color: var(--text-sub); font-size: 12px;">
+            Telegram ID: <code id="bugReportUserTgId" style="background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px;">-</code>
+          </div>
+        </div>
+
+        <form id="bugReportForm" onsubmit="return false;">
+          <div class="form-group" style="margin-bottom: 14px;">
+            <label for="bugReportCategory" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">Muammo turi</label>
+            <select id="bugReportCategory" class="form-control" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-size: 13.5px;">
+              <option value="Taymer ishlashidagi xatolik">⏱ Taymer ishlashidagi xatolik</option>
+              <option value="Hisobot va statistikalar muammosi">📊 Hisobot va statistikalar muammosi</option>
+              <option value="Login va avtorizatsiya muammosi">🔐 Login va Avtorizatsiya muammosi</option>
+              <option value="Vazifalar saqlanishida xatolik">📋 Vazifalar saqlanishida xatolik</option>
+              <option value="Dizayn va ko'rinish nuqsoni">🎨 Dizayn va ko'rinish nuqsoni</option>
+              <option value="Boshqa taklif / kamchilik">💡 Boshqa taklif / kamchilik</option>
+            </select>
+          </div>
+
+          <div class="form-group" style="margin-bottom: 16px;">
+            <label for="bugReportDescription" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">Xato haqida batafsil tavsif</label>
+            <textarea id="bugReportDescription" class="form-control" rows="4" placeholder="Uchragan xatolik yoki muammoni batafsil tasvirlab bering..." style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-size: 13.5px; resize: vertical; min-height: 90px;"></textarea>
+          </div>
+
+          <div style="display: flex; gap: 10px; justify-content: flex-end;">
+            <button class="btn-secondary" data-close-modal="bugReportModal" type="button" style="padding: 10px 18px; border-radius: 10px; font-size: 13.5px;">Bekor qilish</button>
+            <button class="btn-primary" id="sendBugReportBtn" type="submit" style="padding: 10px 22px; border-radius: 10px; font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+              <span>Adminga jo'natish 🚀</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="js/api.js"></script>
+  <script type="module" src="js/haptics.js"></script>
+  <script type="module" src="js/auth.js"></script>
+  <script type="module" src="js/timer.js"></script>
+  <script type="module" src="app.js"></script>
+</body>
+
+
+</html>
