@@ -65,6 +65,9 @@ public class TelegramBotPoller {
         log.info("Starting Telegram Bot Long-Polling for @PomodoroUzBot (Frontend URL: {})...", frontendUrl);
         WebClient webClient = webClientBuilder.baseUrl("https://api.telegram.org/bot" + botToken.trim()).build();
 
+        // Register bot commands with Telegram
+        registerBotCommands(webClient);
+
         Thread.ofVirtual().name("telegram-bot-poller").start(() -> {
             while (!Thread.currentThread().isInterrupted()) {
                 try {
@@ -84,6 +87,36 @@ public class TelegramBotPoller {
                 }
             }
         });
+    }
+
+    @SuppressWarnings("unchecked")
+    private void registerBotCommands(WebClient webClient) {
+        try {
+            List<Map<String, String>> commands = List.of(
+                    Map.of("command", "start", "description", "Botni ishga tushirish"),
+                    Map.of("command", "login", "description", "Saytga kirish kodi olish"),
+                    Map.of("command", "stats", "description", "Statistikalar va hisobotlar"),
+                    Map.of("command", "taskstats", "description", "Vazifalar bo'yicha hisobot"),
+                    Map.of("command", "about", "description", "Loyiha haqida ma'lumot")
+            );
+
+            Map<String, Object> body = Map.of("commands", commands);
+
+            Map<String, Object> response = webClient.post()
+                    .uri("/setMyCommands")
+                    .bodyValue(body)
+                    .retrieve()
+                    .bodyToMono(Map.class)
+                    .block(Duration.ofSeconds(10));
+
+            if (response != null && Boolean.TRUE.equals(response.get("ok"))) {
+                log.info("Bot commands registered successfully: /start, /login, /stats, /taskstats, /about");
+            } else {
+                log.warn("Failed to register bot commands: {}", response);
+            }
+        } catch (Exception e) {
+            log.warn("Error registering bot commands: {}", e.getMessage());
+        }
     }
 
     @SuppressWarnings("unchecked")
