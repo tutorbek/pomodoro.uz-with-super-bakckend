@@ -66,6 +66,9 @@ public class SecurityConfig {
         }
 
         List<String> devOrigins = List.of(
+            "https://pomodoro.uz",
+            "https://www.pomodoro.uz",
+            "http://pomodoro.uz",
             "http://localhost:5500",
             "http://localhost:5173",
             "http://localhost:3000",

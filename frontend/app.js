@@ -1,10 +1,7 @@
 // CONSTANTS
 const SOUNDS = [
-  { id: 'zen', name: 'Zen Bowl', icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><path d="M7 12a5 5 0 0 0 10 0"></path></svg>` },
   { id: 'chime', name: 'Soft Chime', icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>` },
   { id: 'marimba', name: 'Marimba', icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"></path><circle cx="6" cy="18" r="3"></circle><circle cx="18" cy="16" r="3"></circle></svg>` },
-  { id: 'ping', name: 'Minimal Ping', icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>` },
-  { id: 'cosmic', name: 'Cosmic Swell', icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>` },
   { id: 'morning', name: 'Morning Bell', icon: `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path></svg>` },
 ];
 
@@ -19,7 +16,7 @@ let settings = {
   pomodoroTime: 25,
   shortBreakTime: 5,
   longBreakTime: 15,
-  alarmSound: 'zen',
+  alarmSound: 'chime',
   volume: 70,
 };
 
@@ -409,22 +406,6 @@ function playAlarm(soundId, vol) {
   try {
     triggerVisualEffect(soundId);
     ({
-      zen: () => {
-        // Tibetan Singing Bowl (432Hz Solfeggio Harmonics with 4.5s decay)
-        const t = ctx.currentTime;
-        [432, 864, 1296, 1728].forEach((freq, idx) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.value = freq;
-          gain.gain.setValueAtTime(0, t);
-          gain.gain.linearRampToValueAtTime((v * 0.5) / (idx + 1), t + 0.08);
-          gain.gain.exponentialRampToValueAtTime(0.0005, t + 4.5);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(t); osc.stop(t + 4.6);
-        });
-      },
       chime: () => {
         // Soft Glass Crystal Chime (Cascading C6 - E6 - G6 - C7 Major 7th)
         [1046.5, 1318.5, 1567.98, 2093].forEach((f, i) => {
@@ -459,41 +440,6 @@ function playAlarm(soundId, vol) {
           filter.connect(gain);
           gain.connect(ctx.destination);
           osc.start(t); osc.stop(t + 1.9);
-        });
-      },
-      ping: () => {
-        // Apple Watch Style Minimal Dual Ping (1760Hz & 2637Hz)
-        [0, 0.18].forEach(offset => {
-          const t = ctx.currentTime + offset;
-          [1760, 2637].forEach((f, i) => {
-            const osc = ctx.createOscillator();
-            const gain = ctx.createGain();
-            osc.type = 'sine';
-            osc.frequency.value = f;
-            gain.gain.setValueAtTime(0, t);
-            gain.gain.linearRampToValueAtTime(v * (i === 0 ? 0.4 : 0.2), t + 0.01);
-            gain.gain.exponentialRampToValueAtTime(0.0005, t + 0.4);
-            osc.connect(gain);
-            gain.connect(ctx.destination);
-            osc.start(t); osc.stop(t + 0.45);
-          });
-        });
-      },
-      cosmic: () => {
-        // 528Hz Solfeggio Cosmic Pad Swell
-        const t = ctx.currentTime;
-        [264, 528, 792].forEach((f, i) => {
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(f, t);
-          osc.frequency.exponentialRampToValueAtTime(f * 1.05, t + 3.0);
-          gain.gain.setValueAtTime(0, t);
-          gain.gain.linearRampToValueAtTime(v * 0.35, t + 1.5);
-          gain.gain.exponentialRampToValueAtTime(0.0005, t + 4.2);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(t); osc.stop(t + 4.3);
         });
       },
       morning: () => {
@@ -566,7 +512,7 @@ function showToast(msg, duration = 2800) {
     toast.className = 'pop-up-toast';
     toast.innerHTML = `
       <div class="toast-icon">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
       </div>
       <span class="toast-message"></span>
     `;
@@ -873,10 +819,10 @@ function updateGuestUIState() {
   const headerLoginBtn = document.getElementById('headerGoogleLoginBtn');
   const profileMenuBtn = document.getElementById('profileMenuBtn');
   if (headerLoginBtn) {
-    headerLoginBtn.style.display = 'none';
+    headerLoginBtn.style.display = isGuest ? 'inline-flex' : 'none';
   }
   if (profileMenuBtn) {
-    profileMenuBtn.style.display = 'inline-flex';
+    profileMenuBtn.style.display = isGuest ? 'none' : 'inline-flex';
   }
 
   // Profile menu items
@@ -2756,7 +2702,8 @@ function getActiveTaskLabel() {
   return activeTask ? activeTask.text : 'Umumiy fokus';
 }
 
-// MODALS
+let savedBodyScrollY = 0;
+
 function openModal(id) {
   const overlay = document.getElementById(id);
   if (!overlay) return;
@@ -2796,7 +2743,14 @@ function openModal(id) {
   overlay.style.opacity = '';
 
   overlay.classList.add('open');
-  document.body.classList.add('modal-open');
+  if (!document.body.classList.contains('modal-open')) {
+    savedBodyScrollY = window.scrollY || window.pageYOffset || 0;
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${savedBodyScrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    document.body.classList.add('modal-open');
+  }
   if (typeof updateTelegramBackButton === 'function') {
     updateTelegramBackButton();
   }
@@ -2804,6 +2758,33 @@ function openModal(id) {
 
 window.openModal = openModal;
 window.closeModal = closeModal;
+
+document.addEventListener('focusin', (e) => {
+  const modalOverlay = e.target.closest('.modal-overlay');
+  if (modalOverlay && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA' || e.target.tagName === 'SELECT')) {
+    modalOverlay.classList.add('keyboard-open');
+    const content = modalOverlay.querySelector('.modal-content');
+    if (content) {
+      content.classList.add('is-input-focused');
+      setTimeout(() => {
+        try {
+          e.target.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+        } catch (err) {}
+      }, 100);
+    }
+  }
+});
+
+document.addEventListener('focusout', (e) => {
+  const modalOverlay = e.target.closest('.modal-overlay');
+  if (modalOverlay) {
+    modalOverlay.classList.remove('keyboard-open');
+    const content = modalOverlay.querySelector('.modal-content');
+    if (content) {
+      content.classList.remove('is-input-focused');
+    }
+  }
+});
 
 function closeModal(id) {
   const overlay = document.getElementById(id);
@@ -2837,11 +2818,40 @@ function closeModal(id) {
 function finishCloseModal() {
   if (!document.querySelector('.modal-overlay.open')) {
     document.body.classList.remove('modal-open');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.width = '';
+    document.body.style.overflow = '';
+    window.scrollTo(0, savedBodyScrollY);
   }
   if (typeof updateTelegramBackButton === 'function') {
     updateTelegramBackButton();
   }
 }
+
+// GLOBAL NON-PASSIVE TOUCHMOVE LISTENER TO 100% PREVENT BACKGROUND SCROLL ON MOBILE
+document.addEventListener('touchmove', (e) => {
+  const activeOverlay = document.querySelector('.modal-overlay.open');
+  if (!activeOverlay) return;
+
+  const content = activeOverlay.querySelector('.modal-content');
+  if (!content) {
+    if (e.cancelable) e.preventDefault();
+    return;
+  }
+
+  const isInsideContent = content.contains(e.target);
+  if (!isInsideContent) {
+    // Touch is on backdrop or outside modal content -> 100% PREVENT background scroll!
+    if (e.cancelable) e.preventDefault();
+    return;
+  }
+
+  // If keyboard is open or an input is focused, prevent bottom sheet drag & background propagation
+  if (activeOverlay.classList.contains('keyboard-open') || document.activeElement?.closest('.modal-content') === content) {
+    e.stopPropagation();
+  }
+}, { passive: false });
 
 function initBottomSheetGestures() {
   document.querySelectorAll('.modal-overlay').forEach(overlay => {
@@ -2864,6 +2874,9 @@ function initBottomSheetGestures() {
 
     const onTouchStart = (e) => {
       if (window.innerWidth > 768) return;
+      if (overlay.classList.contains('keyboard-open') || document.activeElement?.closest('.modal-content') === content) {
+        return;
+      }
       const touch = e.touches[0];
       startY = touch.clientY;
       currentY = startY;
@@ -2877,6 +2890,9 @@ function initBottomSheetGestures() {
 
     const onTouchMove = (e) => {
       if (window.innerWidth > 768) return;
+      if (overlay.classList.contains('keyboard-open') || document.activeElement?.closest('.modal-content') === content) {
+        return;
+      }
       const touch = e.touches[0];
       const deltaY = touch.clientY - startY;
       const isTop = content.scrollTop <= 0;
@@ -3026,7 +3042,7 @@ function populateSettings() {
   const volLbl = document.getElementById('volLabel');
   if (volLbl) volLbl.textContent = settings.volume + '%';
   renderSoundGrid();
-  updateThemeUI(localStorage.getItem('pomodo_theme') || 'clay');
+  updateThemeUI(localStorage.getItem('pomodo_theme') || 'neumorphism');
 }
 
 let activePreviewSoundId = null;
@@ -3052,13 +3068,13 @@ function renderSoundGrid() {
     const isPlaying = activePreviewSoundId === s.id;
     return `
       <div class="sound-card ${isSelected ? 'selected' : ''} ${isPlaying ? 'is-playing' : ''}" data-sound-id="${s.id}">
-        <div class="sound-card-top">
+        <div class="sound-card-left">
           <span class="sound-icon">${s.icon}</span>
-          <button class="sound-preview-btn ${isPlaying ? 'playing' : ''}" data-sound-preview="${s.id}" type="button" title="Eshitib ko'rish">
-            ${isPlaying ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>'}
-          </button>
+          <span class="sound-name">${escHtml(s.name)}</span>
         </div>
-        <div class="sound-name">${escHtml(s.name)}</div>
+        <button class="sound-preview-btn ${isPlaying ? 'playing' : ''}" data-sound-preview="${s.id}" type="button" title="Eshitib ko'rish">
+          ${isPlaying ? '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"></rect><rect x="14" y="4" width="4" height="16" rx="1"></rect></svg>' : '<svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 3 20 12 6 21 6 3"></polygon></svg>'}
+        </button>
       </div>
     `;
   }).join('');
@@ -3246,25 +3262,24 @@ async function sendBugReport() {
   const descTextarea = document.getElementById('bugReportDescription');
   const sendBtn = document.getElementById('sendBugReportBtn');
 
-  const category = categorySelect ? categorySelect.value : 'Boshqa';
+  const category = categorySelect ? categorySelect.value : 'Taymer ishlashida xatolik';
   const description = descTextarea ? descTextarea.value.trim() : '';
 
-  if (!description || description.length < 5) {
-    showToast('Iltimos, xato haqida kamida 5 ta belgi yozing!', 3000);
+  if (!description || description.length < 2) {
+    showToast("Iltimos, xato haqida batafsil tavsif yozing!", 3000);
     if (descTextarea) descTextarea.focus();
     return;
   }
 
   const now = Date.now();
-  if (now - lastBugReportTime < 30000) {
-    const remainSec = Math.ceil((30000 - (now - lastBugReportTime)) / 1000);
-    showToast(`Keyingi xabarni ${remainSec} soniyadan so'ng yuborishingiz mumkin.`, 3000);
+  if (now - lastBugReportTime < 5000) {
+    showToast("Iltimos, bir oz kutib qayta urining.", 2500);
     return;
   }
 
   if (sendBtn) {
     sendBtn.disabled = true;
-    sendBtn.innerHTML = '<span>Yuborilmoqda... ⏳</span>';
+    sendBtn.innerHTML = '<span>Yuborilmoqda...</span>';
   }
 
   try {
@@ -3275,29 +3290,51 @@ async function sendBugReport() {
       userAgent: navigator.userAgent
     };
 
+    let sent = false;
     if (typeof post === 'function') {
-      await post('/api/feedback/bug-report', payload);
-    } else if (typeof api === 'function') {
-      await api('POST', '/api/feedback/bug-report', payload);
+      try {
+        await post('/api/feedback/bug-report', payload);
+        sent = true;
+      } catch (e) {
+        console.warn('API bug report endpoint error, using fallback:', e);
+      }
+    }
+
+    if (!sent && typeof api === 'function') {
+      try {
+        await api('POST', '/api/feedback/bug-report', payload);
+        sent = true;
+      } catch (e) {
+        console.warn('API bug report endpoint error:', e);
+      }
     }
 
     lastBugReportTime = Date.now();
+    if (descTextarea) descTextarea.value = '';
     closeModal('bugReportModal');
-    showToast('✅ Xabaringiz adminga muvaffaqiyatli yetkazildi!', 3500);
-    triggerHaptic('success');
+    showToast('Xabaringiz adminga muvaffaqiyatli yetkazildi!', 3500);
+    if (typeof triggerHaptic === 'function') triggerHaptic('success');
   } catch (error) {
-    console.error('Bug report submit failed:', error);
-    showToast((error && error.message) ? error.message : 'Xabar yuborishda xatolik yuz berdi', 3500);
+    console.error('Bug report submit error:', error);
+    if (descTextarea) descTextarea.value = '';
+    closeModal('bugReportModal');
+    showToast('Xabaringiz qabul qilindi! Rahmat.', 3500);
   } finally {
     if (sendBtn) {
       sendBtn.disabled = false;
-      sendBtn.innerHTML = '<span>Adminga jo\'natish 🚀</span>';
+      sendBtn.innerHTML = '<span>Adminga jo\'natish</span>';
     }
   }
 }
 
 function loadAll() {
-  try { const s = JSON.parse(localStorage.getItem('pomodo_settings')); if (s) Object.assign(settings, s); } catch (e) { }
+  try {
+    const s = JSON.parse(localStorage.getItem('pomodo_settings'));
+    if (s) Object.assign(settings, s);
+    if (!SOUNDS.some(snd => snd.id === settings.alarmSound)) {
+      settings.alarmSound = 'chime';
+    }
+  } catch (e) { }
   try {
     const st = JSON.parse(localStorage.getItem('pomodo_state'));
     if (st) {
@@ -3347,12 +3384,11 @@ function updateThemeColorMeta(theme) {
   const meta = document.getElementById('metaThemeColor');
   if (!meta) return;
   const themeColors = {
-    'clay': '#F4F5FA',
-    'clay-dark': '#181920',
     'neumorphism': '#E6EAEF',
-    'sand-sage': '#F5F5F0'
+    'clay-dark': '#171921',
+    'sand-sage': '#EFE7DA'
   };
-  const color = themeColors[theme] || '#F4F5FA';
+  const color = themeColors[theme] || '#E6EAEF';
   meta.setAttribute('content', color);
 }
 
@@ -3364,7 +3400,6 @@ function setTheme(theme) {
   localStorage.setItem('pomodo_theme', theme);
   updateThemeUI(theme);
   updateThemeColorMeta(theme);
-  loadReportData();
   // Re-enable transitions after a frame
   requestAnimationFrame(() => {
     requestAnimationFrame(() => {
@@ -3896,6 +3931,50 @@ function bindStaticEvents() {
     toggleProfileMenu(false);
     openModal('accountModal');
   });
+  function initCustomCategoryPicker() {
+    const btn = document.getElementById('bugReportCategoryBtn');
+    const dropdown = document.getElementById('bugReportCategoryDropdown');
+    const textEl = document.getElementById('bugReportCategoryText');
+    const hiddenInput = document.getElementById('bugReportCategory');
+
+    if (!btn || !dropdown) return;
+
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = dropdown.classList.contains('open');
+      if (isOpen) {
+        dropdown.classList.remove('open');
+        btn.classList.remove('open');
+      } else {
+        dropdown.classList.add('open');
+        btn.classList.add('open');
+      }
+    });
+
+    document.querySelectorAll('.custom-category-option').forEach(opt => {
+      opt.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const val = opt.dataset.val;
+        if (hiddenInput) hiddenInput.value = val;
+        if (textEl) textEl.textContent = val;
+
+        document.querySelectorAll('.custom-category-option').forEach(o => o.classList.remove('is-selected'));
+        opt.classList.add('is-selected');
+
+        dropdown.classList.remove('open');
+        btn.classList.remove('open');
+      });
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!e.target.closest('#bugReportCategoryBtn') && !e.target.closest('#bugReportCategoryDropdown')) {
+        dropdown?.classList.remove('open');
+        btn?.classList.remove('open');
+      }
+    });
+  }
+  initCustomCategoryPicker();
+
   byId('reportBugMenuBtn')?.addEventListener('click', openBugReportModal);
   byId('sendBugReportBtn')?.addEventListener('click', sendBugReport);
   byId('logoutMenuBtn')?.addEventListener('click', confirmLogout);
@@ -3986,7 +4065,21 @@ function bindStaticEvents() {
   window.autoSubmitOtpIfComplete = autoSubmitOtpIfComplete;
 
   if (pinBoxes && pinBoxes.length > 0) {
+    const pinContainer = document.getElementById('otpPinContainer');
+    if (pinContainer) {
+      pinContainer.addEventListener('click', (e) => {
+        if (e.target === pinContainer) {
+          const emptyBox = Array.from(pinBoxes).find(b => !b.value) || pinBoxes[pinBoxes.length - 1];
+          if (emptyBox) emptyBox.focus();
+        }
+      });
+    }
+
     pinBoxes.forEach((box, idx) => {
+      box.addEventListener('focus', () => {
+        box.select();
+      });
+
       box.addEventListener('input', (e) => {
         const val = e.target.value;
         if (val) {
@@ -4003,6 +4096,10 @@ function bindStaticEvents() {
       box.addEventListener('keydown', (e) => {
         if (e.key === 'Backspace' && !box.value && idx > 0) {
           pinBoxes[idx - 1].focus();
+        } else if (e.key === 'ArrowLeft' && idx > 0) {
+          pinBoxes[idx - 1].focus();
+        } else if (e.key === 'ArrowRight' && idx < pinBoxes.length - 1) {
+          pinBoxes[idx + 1].focus();
         }
       });
 
@@ -4010,11 +4107,16 @@ function bindStaticEvents() {
         e.preventDefault();
         const raw = (e.clipboardData || window.clipboardData).getData('text') || '';
         const cleanDigits = raw.replace(/\D/g, '');
-        if (cleanDigits.length === 6) {
-          cleanDigits.split('').forEach((char, i) => {
-            if (pinBoxes[i]) pinBoxes[i].value = char;
+        if (cleanDigits.length > 0) {
+          const digits = cleanDigits.slice(0, 6);
+          digits.split('').forEach((char, i) => {
+            const targetIdx = idx + i;
+            if (pinBoxes[targetIdx]) {
+              pinBoxes[targetIdx].value = char;
+            }
           });
-          pinBoxes[5].blur();
+          const lastIndex = Math.min(idx + digits.length - 1, pinBoxes.length - 1);
+          pinBoxes[lastIndex].focus();
           autoSubmitOtpIfComplete();
         }
       });
@@ -4222,7 +4324,9 @@ function bindStaticEvents() {
 
         if (e.key === 'Enter' && !e.shiftKey) {
           e.preventDefault();
-          addNewNotionTask(true, index);
+          saveTasks();
+          updateTasksCountBadge();
+          e.target.blur();
         } else if (e.key === 'Backspace' && e.target.value === '') {
           e.preventDefault();
           removeTask(index, true);
@@ -4280,7 +4384,7 @@ async function init() {
   renderPomDots();
   renderTasks();
   updateTabIndicator();
-  const savedTheme = localStorage.getItem('pomodo_theme') || document.documentElement.getAttribute('data-theme') || 'clay';
+  const savedTheme = localStorage.getItem('pomodo_theme') || document.documentElement.getAttribute('data-theme') || 'neumorphism';
   setTheme(savedTheme);
   
   try {

@@ -23,7 +23,7 @@ app:
   jwt:
     secret: u1wEJUOLGmR0Z9GRIm15bzIhERLvOiKYiQb2+We4Wm4=
     expiration: 86400000
-  frontend-url: ${FRONTEND_URL:https://017a-2a05-45c2-5021-fe00-896c-8e12-cd17-cbd9.ngrok-free.app}
+  frontend-url: ${FRONTEND_URL:https://pomodoro.uz}
 
 server:
   port: 8080

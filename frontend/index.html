@@ -3,10 +3,10 @@
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover, interactive-widget=resizes-content">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" id="metaThemeColor" content="#F4F5FA">
+  <meta name="theme-color" id="metaThemeColor" content="#E6EAEF">
   <meta name="description"
     content="Pomodoro.uz — Mahsuldorlikni oshirish, dars qilish va dasturlashga fokuslanish uchun bepul onlayn Pomodoro taymeri, Lofi musiqa, Notion-style vazifalar va analitika ilovasi.">
   <meta name="keywords"
@@ -17,21 +17,19 @@
   <script>
     (function() {
       try {
-        var validThemes = ['clay', 'clay-dark', 'neumorphism', 'sand-sage'];
+        var validThemes = ['neumorphism', 'clay-dark', 'sand-sage'];
         var t = localStorage.getItem('pomodo_theme');
         if (!t || validThemes.indexOf(t) === -1) {
-          var isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          t = isDark ? 'clay-dark' : 'clay';
+          t = 'neumorphism';
         }
         document.documentElement.setAttribute('data-theme', t);
         
         var themeColors = {
-          'clay': '#F4F5FA',
-          'clay-dark': '#181920',
           'neumorphism': '#E6EAEF',
-          'sand-sage': '#F5F5F0'
+          'clay-dark': '#171921',
+          'sand-sage': '#EFE7DA'
         };
-        var color = themeColors[t] || '#F4F5FA';
+        var color = themeColors[t] || '#E6EAEF';
         var meta = document.getElementById('metaThemeColor');
         if (meta) meta.setAttribute('content', color);
       } catch (e) {}
@@ -137,7 +135,7 @@
           <li><strong>Notion Uslubidagi Vazifalar Boshqaruvi:</strong> Vazifalarni ro'yxatga olish, ularni taymerga biriktirish va bajarilish foizini kuzatish.</li>
           <li><strong>Real-Vaqt Analitikasi va Streak:</strong> Umumiy diqqat vaqti, bajarilgan seanslar va uzluksiz faol kunlar zanjiri.</li>
           <li><strong>Telegram Sinxronizatsiyasi:</strong> Bulutli saqlash va barcha qurilmalarda avtomatik ma'lumotlar sinxronizatsiyasi.</li>
-          <li><strong>10+ Estetik Vizual Mavzular:</strong> Dark Mode, Light, Neumorphism, Clay, OLED, Sepia, Mint, Lavender Clay va boshqalar.</li>
+          <li><strong>Estetik Vizual Mavzular:</strong> Neumorphism, Clay Qorong'u, Sand & Sage va boshqalar.</li>
         </ul>
       </section>
 
@@ -214,7 +212,7 @@
             <li><a href="https://t.me/bkzd19" target="_blank">Made with 🥷🏻 by bkzd19</a></li>
           </ul>
         </nav>
-        <p>©Pomofocus 2019-2026. All Rights Reserved.</p>
+        <p>©Pomodoro.uz 2019-2026. All Rights Reserved.</p>
       </section>
     </article>
   </div>
@@ -230,10 +228,10 @@
       <div class="header-actions">
         <div class="profile-menu-wrap">
           <img src="animegirlicon-180.png" class="header-sitting-girl" alt="Header Mascot">
-          <a class="btn-header-login" id="headerGoogleLoginBtn" href="javascript:void(0)" onclick="loginWithTelegram()" style="display: none;">
+          <a class="btn-header-login" id="headerGoogleLoginBtn" href="javascript:void(0)" onclick="loginWithTelegram()">
             <span>Kirish</span>
           </a>
-          <button class="avatar-btn" id="profileMenuBtn" type="button" title="Profil menyusi">
+          <button class="avatar-btn" id="profileMenuBtn" type="button" title="Profil menyusi" style="display: none;">
             <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="32" cy="32" r="30" fill="#FFB703"/><path d="M14 14L22 26H12L14 14Z" fill="#FB8500"/><path d="M50 14L42 26H52L50 14Z" fill="#FB8500"/><circle cx="23" cy="32" r="4" fill="#023047"/><circle cx="41" cy="32" r="4" fill="#023047"/><circle cx="24" cy="31" r="1.5" fill="#FFF"/><circle cx="42" cy="31" r="1.5" fill="#FFF"/><ellipse cx="32" cy="38" rx="3" ry="2" fill="#FB8500"/><path d="M28 41C30 43 34 43 36 41" stroke="#023047" stroke-width="2" stroke-linecap="round"/><path d="M10 34H18M11 38H17M46 34H54M47 38H53" stroke="#023047" stroke-width="1.8" stroke-linecap="round"/></svg>
           </button>
           <div class="profile-menu" id="profileMenu" aria-hidden="true">
@@ -668,9 +666,9 @@
             <!-- Title -->
             <h2 class="minimal-login-title">Kodni Kiriting</h2>
 
-            <!-- Subtitle -->
-            <p class="minimal-login-subtitle">
-              <a href="https://t.me/PomodoroUzBot" target="_blank" rel="noopener" class="minimal-bot-link">@PomodoroUzBot</a> telegram botiga kiring va 1 daqiqalik kodingizni oling.
+            <!-- Hero Helper Text -->
+            <p class="minimal-login-hero-text">
+              Bot'ga kir ko'dni ol va login qil. Hammasi juda osson.
             </p>
 
             <!-- 6 Pin Digit Inputs -->
@@ -704,7 +702,6 @@
           <h3 class="settings-section-title">Tashqi ko'rinish va mavzular</h3>
           <div class="form-group">
             <div class="theme-grid">
-              <button class="theme-option" data-theme-id="clay"><span class="theme-icon-svg"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.2-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H17c2.8 0 5-2.2 5-5 0-5.5-4.5-9.6-10-9.6z"></path></svg></span><span>Clay</span></button>
               <button class="theme-option" data-theme-id="clay-dark"><span class="theme-icon-svg"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><circle cx="13.5" cy="6.5" r=".5" fill="currentColor"></circle><circle cx="17.5" cy="10.5" r=".5" fill="currentColor"></circle><circle cx="8.5" cy="7.5" r=".5" fill="currentColor"></circle><path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.9 0 1.6-.7 1.6-1.6 0-.4-.2-.8-.4-1.1-.2-.3-.4-.7-.4-1.1 0-.9.7-1.6 1.6-1.6H17c2.8 0 5-2.2 5-5 0-5.5-4.5-9.6-10-9.6z"></path></svg></span><span>Clay Qorong'u</span></button>
               <button class="theme-option" data-theme-id="neumorphism"><span class="theme-icon-svg"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="4" width="16" height="16" rx="4" fill="#E6EAEF" stroke="#B8C4D0"></rect><rect x="8" y="8" width="8" height="8" rx="2" fill="#E6EAEF" stroke="#94A3B8"></rect></svg></span><span>Neumorfizm</span></button>
               <button class="theme-option" data-theme-id="sand-sage"><span class="theme-icon-svg"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a10 10 0 0 0-10 10c0 5.5 4.5 10 10 10s10-4.5 10-10A10 10 0 0 0 12 2z"></path><path d="M12 6a6 6 0 0 1 6 6c0 3.3-2.7 6-6 6" fill="rgba(181,201,138,0.5)"></path></svg></span><span>Sand & Sage</span></button>
@@ -729,15 +726,15 @@
           <div class="form-row">
             <div class="form-group">
               <label class="form-label">Pomodoro</label>
-              <input type="number" class="form-input" id="setPomodoro" min="1" max="60" value="25">
+              <input type="number" class="form-input" id="setPomodoro" min="1" max="60" value="25" inputmode="numeric" pattern="[0-9]*">
             </div>
             <div class="form-group">
               <label class="form-label">Qisqa tanaffus</label>
-              <input type="number" class="form-input" id="setShortBreak" min="1" max="30" value="5">
+              <input type="number" class="form-input" id="setShortBreak" min="1" max="30" value="5" inputmode="numeric" pattern="[0-9]*">
             </div>
             <div class="form-group">
               <label class="form-label">Uzun tanaffus</label>
-              <input type="number" class="form-input" id="setLongBreak" min="1" max="60" value="15">
+              <input type="number" class="form-input" id="setLongBreak" min="1" max="60" value="15" inputmode="numeric" pattern="[0-9]*">
             </div>
           </div>
           <button class="btn-primary-small" id="saveSettingsBtn" type="button" style="margin-top: 14px;">
@@ -752,27 +749,27 @@
             <!-- 6 Pages Navigation Buttons Grid -->
             <div class="settings-pages-grid">
               <button type="button" onclick="openModal('homeInfoModal')" class="settings-page-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#6C63FF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
                 <span>HOME</span>
               </button>
               <button type="button" onclick="openModal('privacyInfoModal')" class="settings-page-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
                 <span>PRIVACY</span>
               </button>
               <button type="button" onclick="openModal('termsInfoModal')" class="settings-page-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E76F51" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
                 <span>TERMS</span>
               </button>
               <button type="button" onclick="openModal('commerceInfoModal')" class="settings-page-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#F4A261" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
                 <span>COMMERCE</span>
               </button>
               <button type="button" onclick="openModal('contactInfoModal')" class="settings-page-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3A86EF" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
                 <span>CONTACT</span>
               </button>
               <button type="button" onclick="openModal('simplePageInfoModal')" class="settings-page-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E91E63" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
                 <span>SIMPLE PAGE</span>
               </button>
             </div>
@@ -780,19 +777,19 @@
             <h3 class="settings-section-title" style="margin-top: 16px;">Rasmiy Havolalar</h3>
             <div class="settings-links-grid">
               <a href="https://t.me/PomodoroUzBot" target="_blank" rel="noopener" class="settings-link-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="#0088cc"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.67-.54.83-1.1.52l-3.02-2.23-1.46 1.4c-.16.16-.3.3-.61.3l.21-3.06 5.57-5.03c.24-.22-.05-.34-.37-.13l-6.88 4.33-2.97-.93c-.65-.2-.66-.65.14-.96l11.6-4.47c.54-.2 1.01.13.86.98z"/></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12s5.37 12 12 12 12-5.37 12-12S18.63 0 12 0zm5.56 8.16l-1.97 9.28c-.15.67-.54.83-1.1.52l-3.02-2.23-1.46 1.4c-.16.16-.3.3-.61.3l.21-3.06 5.57-5.03c.24-.22-.05-.34-.37-.13l-6.88 4.33-2.97-.93c-.65-.2-.66-.65.14-.96l11.6-4.47c.54-.2 1.01.13.86.98z"/></svg>
                 <span>Telegram Bot</span>
               </a>
               <a href="https://t.me/tutorbek" target="_blank" rel="noopener" class="settings-link-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2A9D8F" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="13" y2="13"></line></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path><line x1="9" y1="9" x2="15" y2="9"></line><line x1="9" y1="13" x2="13" y2="13"></line></svg>
                 <span>Telegram Channel</span>
               </a>
               <a href="https://tirikchilik.uz/tutorbek" target="_blank" rel="noopener" class="settings-link-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#E76F51" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
-                <span style="color: #E76F51;">Tirikchilik</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8h1a4 4 0 0 1 0 8h-1"></path><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"></path><line x1="6" y1="1" x2="6" y2="4"></line><line x1="10" y1="1" x2="10" y2="4"></line><line x1="14" y1="1" x2="14" y2="4"></line></svg>
+                <span>Tirikchilik</span>
               </a>
               <a href="https://t.me/bkzd19" target="_blank" rel="noopener" class="settings-link-card">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8E44AD" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
                 <span>Made with 🥷🏻 by bkzd19</span>
               </a>
             </div>
@@ -800,7 +797,7 @@
             <!-- Copyright Footer -->
             <div class="app-footer-credits" style="text-align: center; margin-top: 20px; padding-top: 16px; border-top: 1px dashed var(--border); font-size: 12px; color: var(--text-sub);">
               <p>Made with 🥷🏻 by <a href="https://t.me/bkzd19" target="_blank" style="color: var(--primary); text-decoration: none; font-weight: 600;">bkzd19</a></p>
-              <p style="margin-top: 4px; opacity: 0.8;">©Pomofocus 2019-2026. All Rights Reserved.</p>
+              <p style="margin-top: 4px; opacity: 0.8;">©Pomodoro.uz 2019-2026. All Rights Reserved.</p>
             </div>
           </div>
         </div>
@@ -1143,38 +1140,38 @@
     <div class="modal-content" style="max-width: 520px; padding: 24px 20px; max-height: 90vh; overflow-y: auto;">
       <div class="bottom-sheet-handle"></div>
       <div class="modal-header">
-        <h2 style="display: flex; align-items: center; gap: 8px; font-size: 18px;">
-          <span>🚨</span> Xato haqida xabar berish
+        <h2 style="font-size: 18px;">
+          Xato haqida xabar berish
         </h2>
         <button class="modal-close" data-close-modal="bugReportModal">✕</button>
       </div>
       <div class="modal-body" style="margin-top: 12px;">
-        <p style="font-size: 13.5px; color: var(--text-sub); line-height: 1.5; margin-bottom: 16px;">
-          Sayt yoki botda uchragan muammo va kamchiliklarni bevosita adminga yuboring.
-        </p>
-
-        <!-- User Info Card -->
-        <div id="bugReportUserCard" style="background: var(--bg-surface); padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); margin-bottom: 16px; font-size: 13px; color: var(--text-main);">
-          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-            <strong id="bugReportUserName">Foydalanuvchi: -</strong>
-            <span id="bugReportUserPhone" style="color: var(--text-sub); font-size: 12px;">Tel: -</span>
-          </div>
-          <div style="color: var(--text-sub); font-size: 12px;">
-            Telegram ID: <code id="bugReportUserTgId" style="background: rgba(0,0,0,0.06); padding: 2px 6px; border-radius: 4px;">-</code>
-          </div>
-        </div>
-
         <form id="bugReportForm" onsubmit="return false;">
-          <div class="form-group" style="margin-bottom: 14px;">
-            <label for="bugReportCategory" style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">Muammo turi</label>
-            <select id="bugReportCategory" class="form-control" style="width: 100%; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-card); color: var(--text-main); font-size: 13.5px;">
-              <option value="Taymer ishlashidagi xatolik">⏱ Taymer ishlashidagi xatolik</option>
-              <option value="Hisobot va statistikalar muammosi">📊 Hisobot va statistikalar muammosi</option>
-              <option value="Login va avtorizatsiya muammosi">🔐 Login va Avtorizatsiya muammosi</option>
-              <option value="Vazifalar saqlanishida xatolik">📋 Vazifalar saqlanishida xatolik</option>
-              <option value="Dizayn va ko'rinish nuqsoni">🎨 Dizayn va ko'rinish nuqsoni</option>
-              <option value="Boshqa taklif / kamchilik">💡 Boshqa taklif / kamchilik</option>
-            </select>
+          <div class="form-group" style="margin-bottom: 14px; position: relative;">
+            <label style="display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; color: var(--text-main);">Muammo turi</label>
+            <input type="hidden" id="bugReportCategory" value="Taymer ishlashida xatolik">
+            <button type="button" id="bugReportCategoryBtn" class="custom-category-btn">
+              <span id="bugReportCategoryText">Taymer ishlashida xatolik</span>
+              <svg class="custom-category-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </button>
+            <div id="bugReportCategoryDropdown" class="custom-category-dropdown">
+              <div class="custom-category-option is-selected" data-val="Taymer ishlashida xatolik">
+                <span>Taymer ishlashida xatolik</span>
+                <svg class="option-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div class="custom-category-option" data-val="Hisobot">
+                <span>Hisobot</span>
+                <svg class="option-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div class="custom-category-option" data-val="Dizayn nuqsoni">
+                <span>Dizayn nuqsoni</span>
+                <svg class="option-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+              <div class="custom-category-option" data-val="Boshqa taklif / kamchilik">
+                <span>Boshqa taklif / kamchilik</span>
+                <svg class="option-check" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              </div>
+            </div>
           </div>
 
           <div class="form-group" style="margin-bottom: 16px;">
@@ -1184,8 +1181,8 @@
 
           <div style="display: flex; gap: 10px; justify-content: flex-end;">
             <button class="btn-secondary" data-close-modal="bugReportModal" type="button" style="padding: 10px 18px; border-radius: 10px; font-size: 13.5px;">Bekor qilish</button>
-            <button class="btn-primary" id="sendBugReportBtn" type="submit" style="padding: 10px 22px; border-radius: 10px; font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
-              <span>Adminga jo'natish 🚀</span>
+            <button class="btn-primary" id="sendBugReportBtn" type="button" style="padding: 10px 22px; border-radius: 10px; font-size: 13.5px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+              <span>Adminga jo'natish</span>
             </button>
           </div>
         </form>
