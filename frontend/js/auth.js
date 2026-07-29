@@ -225,15 +225,31 @@ async function processTelegramOtpFromUrl() {
   cleanOtpFromUrl();
 
   try {
-    const response = await fetch('/auth/telegram-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ code: otpParam }),
-    });
+    let data = null;
+    let isSuccess = false;
 
-    const data = await response.json().catch(() => ({}));
+    if (typeof post === 'function') {
+      try {
+        data = await post('/auth/telegram-code', { code: otpParam });
+        isSuccess = Boolean(data && data.token);
+      } catch (err) {
+        data = { message: err.message || "Kod muddati o'tgan yoki yaroqsiz. Iltimos, Telegram botdan yangi kod oling." };
+        isSuccess = false;
+      }
+    } else {
+      const baseUrl = (typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'))
+        ? 'http://localhost:8080'
+        : window.location.origin;
+      const response = await fetch(`${baseUrl}/auth/telegram-code`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code: otpParam }),
+      });
+      data = await response.json().catch(() => ({}));
+      isSuccess = response.ok && Boolean(data.token);
+    }
 
-    if (response.ok && data.token) {
+    if (isSuccess && data.token) {
       if (typeof setToken === 'function') {
         setToken(data.token);
       } else {
@@ -260,7 +276,7 @@ async function processTelegramOtpFromUrl() {
       }
       return true;
     } else {
-      const errorMsg = data.message || "Kod muddati o'tgan yoki yaroqsiz. Iltimos, Telegram botdan yangi kod oling.";
+      const errorMsg = (data && data.message) || "Kod muddati o'tgan yoki yaroqsiz. Iltimos, Telegram botdan yangi kod oling.";
       hideTelegramAuthOverlay();
 
       if (typeof window.switchView === 'function') {
