@@ -188,6 +188,8 @@ function cleanOtpFromUrl() {
   }
 }
 
+let isProcessingTelegramOtp = false;
+
 /**
  * URL dagi ?otp=XXXXXX parametrini o'qib, seamless full-screen loader bilan
  * avtomatik autentifikatsiyadan o'tkazadi.
@@ -195,6 +197,10 @@ function cleanOtpFromUrl() {
  * Kod eskirgan/xato bo'lsa -> Login sahifasiga o'tkazib, qizil bildirishnoma ko'rsatadi.
  */
 async function processTelegramOtpFromUrl() {
+  if (isProcessingTelegramOtp) {
+    return false; // Prevent duplicate concurrent executions
+  }
+
   const hash = window.location.hash || '';
   const search = window.location.search || '';
   let otpParam = null;
@@ -211,8 +217,12 @@ async function processTelegramOtpFromUrl() {
     return false; // No OTP in URL
   }
 
+  isProcessingTelegramOtp = true;
   console.log('[Telegram Auth] Seamless OTP login starting for code:', otpParam);
   showTelegramAuthOverlay('Telegram orqali avtomatik kirilmoqda...');
+
+  // Clean OTP parameter from address bar immediately so secondary events don't re-trigger
+  cleanOtpFromUrl();
 
   try {
     const response = await fetch('/auth/telegram-otp', {
@@ -237,7 +247,6 @@ async function processTelegramOtpFromUrl() {
       }
 
       window.dispatchEvent(new CustomEvent('auth:token-changed'));
-      cleanOtpFromUrl();
       hideTelegramAuthOverlay();
 
       if (typeof window.switchView === 'function') {
@@ -252,7 +261,6 @@ async function processTelegramOtpFromUrl() {
       return true;
     } else {
       const errorMsg = data.message || "Kod muddati o'tgan yoki yaroqsiz. Iltimos, Telegram botdan yangi kod oling.";
-      cleanOtpFromUrl();
       hideTelegramAuthOverlay();
 
       if (typeof window.switchView === 'function') {
@@ -273,7 +281,6 @@ async function processTelegramOtpFromUrl() {
     }
   } catch (err) {
     console.error('[Telegram Auth] Error during seamless OTP verification:', err);
-    cleanOtpFromUrl();
     hideTelegramAuthOverlay();
 
     if (typeof window.switchView === 'function') {
@@ -291,6 +298,8 @@ async function processTelegramOtpFromUrl() {
     }, 100);
 
     return false;
+  } finally {
+    isProcessingTelegramOtp = false;
   }
 }
 
