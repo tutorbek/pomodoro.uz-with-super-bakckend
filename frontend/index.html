@@ -1188,6 +1188,19 @@
         </form>
       </div>
     </div>
+  <!-- Seamless Telegram Auth Loader Overlay -->
+  <div id="telegramAuthOverlay" class="telegram-auth-overlay" aria-live="polite">
+    <div class="telegram-auth-card">
+      <div class="telegram-auth-icon-wrapper">
+        <div class="telegram-auth-spinner"></div>
+        <svg class="telegram-auth-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </div>
+      <h3 class="telegram-auth-title">Telegram orqali avtomatik kirilmoqda</h3>
+      <p class="telegram-auth-subtitle" id="telegramAuthStatusMsg">Iltimos, bir oz kuting...</p>
+    </div>
   </div>
 
   <script type="module" src="js/api.js"></script>

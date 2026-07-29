@@ -3732,12 +3732,6 @@ function switchView(viewName) {
   }
 
   if (finalViewName === 'login') {
-    const firstBox = document.querySelector('.otp-pin-box');
-    if (firstBox) {
-      setTimeout(() => firstBox.focus(), 150);
-    }
-
-    // Auto populate & submit if ?otp= parameter present in URL hash or search
     const hash = window.location.hash || '';
     const search = window.location.search || '';
     let otpParam = null;
@@ -3750,20 +3744,14 @@ function switchView(viewName) {
       if (match) otpParam = match[1];
     }
 
-    if (otpParam && otpParam.length === 6) {
-      const pinBoxes = document.querySelectorAll('.otp-pin-box');
-      if (pinBoxes && pinBoxes.length === 6) {
-        otpParam.split('').forEach((char, idx) => {
-          pinBoxes[idx].value = char;
-        });
-        setTimeout(() => {
-          if (typeof window.autoSubmitOtpIfComplete === 'function') {
-            window.autoSubmitOtpIfComplete();
-          } else if (typeof autoSubmitOtpIfComplete === 'function') {
-            autoSubmitOtpIfComplete();
-          }
-        }, 200);
-      }
+    if (otpParam && otpParam.length === 6 && typeof window.processTelegramOtpFromUrl === 'function') {
+      window.processTelegramOtpFromUrl();
+      return;
+    }
+
+    const firstBox = document.querySelector('.otp-pin-box');
+    if (firstBox) {
+      setTimeout(() => firstBox.focus(), 150);
     }
   }
 }
@@ -3776,36 +3764,10 @@ function toggleTimerFullscreen() {
   const isFS = timerCard.classList.toggle('is-fullscreen');
   document.body.classList.toggle('timer-fullscreen-active', isFS);
 
-  if (isFS) {
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    } else if (document.documentElement.webkitRequestFullscreen) {
-      document.documentElement.webkitRequestFullscreen();
-    }
-  } else {
-    if (document.fullscreenElement && document.exitFullscreen) {
-      document.exitFullscreen().catch(() => {});
-    } else if (document.webkitFullscreenElement && document.webkitExitFullscreen) {
-      document.webkitExitFullscreen();
-    }
-  }
   if (typeof updateTelegramBackButton === 'function') {
     updateTelegramBackButton();
   }
 }
-
-function syncFullscreenExit() {
-  if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-    const timerCard = document.querySelector('.timer-card');
-    if (timerCard && timerCard.classList.contains('is-fullscreen')) {
-      timerCard.classList.remove('is-fullscreen');
-      document.body.classList.remove('timer-fullscreen-active');
-    }
-  }
-}
-
-document.addEventListener('fullscreenchange', syncFullscreenExit);
-document.addEventListener('webkitfullscreenchange', syncFullscreenExit);
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Escape') {
@@ -3813,8 +3775,8 @@ document.addEventListener('keydown', e => {
     if (timerCard && timerCard.classList.contains('is-fullscreen')) {
       timerCard.classList.remove('is-fullscreen');
       document.body.classList.remove('timer-fullscreen-active');
-      if (document.fullscreenElement && document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
+      if (typeof updateTelegramBackButton === 'function') {
+        updateTelegramBackButton();
       }
     }
   }
@@ -4388,6 +4350,12 @@ async function init() {
   setTheme(savedTheme);
   
   try {
+    const hash = window.location.hash || '';
+    const search = window.location.search || '';
+    if ((hash.includes('otp=') || search.includes('otp=')) && typeof window.processTelegramOtpFromUrl === 'function') {
+      window.processTelegramOtpFromUrl();
+    }
+
     await loadCurrentUserProfile();
 
     if (typeof initLeaderboard === 'function') {

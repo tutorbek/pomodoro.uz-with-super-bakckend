@@ -6664,4 +6664,101 @@ body.is-login-page #view-login {
   transform: scale(1.12);
 }
 
+/* TELEGRAM SEAMLESS AUTO-LOGIN FULLSCREEN OVERLAY */
+.telegram-auth-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: var(--bg-surface, #E6EAEF);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.telegram-auth-overlay.active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.telegram-auth-card {
+  width: 90%;
+  max-width: 380px;
+  padding: 36px 28px;
+  border-radius: 24px;
+  background: var(--bg-card, #FFFFFF);
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+  box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transform: translateY(12px) scale(0.96);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.telegram-auth-overlay.active .telegram-auth-card {
+  transform: translateY(0) scale(1);
+}
+
+.telegram-auth-icon-wrapper {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.telegram-auth-spinner {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 3.5px solid color-mix(in srgb, #0088cc 20%, transparent);
+  border-top-color: #0088cc;
+  animation: tgAuthSpin 1s linear infinite;
+}
+
+@keyframes tgAuthSpin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.telegram-auth-icon {
+  color: #0088cc;
+  width: 32px;
+  height: 32px;
+  animation: tgAuthPulse 2s ease-in-out infinite;
+}
+
+@keyframes tgAuthPulse {
+  0%, 100% { transform: scale(1); opacity: 0.9; }
+  50% { transform: scale(1.1); opacity: 1; }
+}
+
+.telegram-auth-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--text-main, #1c1c1e);
+  margin: 0 0 8px 0;
+  letter-spacing: -0.3px;
+}
+
+.telegram-auth-subtitle {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--text-sub, #666666);
+  margin: 0;
+  line-height: 1.4;
+}
+
+
 

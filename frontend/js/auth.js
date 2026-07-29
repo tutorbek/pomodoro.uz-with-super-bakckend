@@ -146,6 +146,153 @@ window.logout = logout;
 window.deleteAccount = deleteAccount;
 window.autoLoginTelegramMiniApp = autoLoginTelegramMiniApp;
 window.loginWithTelegram = loginWithTelegram;
+window.showTelegramAuthOverlay = showTelegramAuthOverlay;
+window.hideTelegramAuthOverlay = hideTelegramAuthOverlay;
+window.processTelegramOtpFromUrl = processTelegramOtpFromUrl;
+
+/**
+ * Show seamless Telegram auth overlay loader
+ */
+function showTelegramAuthOverlay(message) {
+  const overlay = document.getElementById('telegramAuthOverlay');
+  const statusMsg = document.getElementById('telegramAuthStatusMsg');
+  if (statusMsg && message) {
+    statusMsg.textContent = message;
+  }
+  if (overlay) {
+    overlay.classList.add('active');
+  }
+}
+
+/**
+ * Hide seamless Telegram auth overlay loader
+ */
+function hideTelegramAuthOverlay() {
+  const overlay = document.getElementById('telegramAuthOverlay');
+  if (overlay) {
+    overlay.classList.remove('active');
+  }
+}
+
+/**
+ * Clean up secret OTP parameter from browser address bar (URL)
+ */
+function cleanOtpFromUrl() {
+  try {
+    if (window.history && window.history.replaceState) {
+      const cleanUrl = window.location.pathname + '#focus';
+      window.history.replaceState(null, '', cleanUrl);
+    }
+  } catch (e) {
+    window.location.hash = '#focus';
+  }
+}
+
+/**
+ * URL dagi ?otp=XXXXXX parametrini o'qib, seamless full-screen loader bilan
+ * avtomatik autentifikatsiyadan o'tkazadi.
+ * Kod to'g'ri bo'lsa -> bosh sahifa (#focus) + Toast + URL tozalash.
+ * Kod eskirgan/xato bo'lsa -> Login sahifasiga o'tkazib, qizil bildirishnoma ko'rsatadi.
+ */
+async function processTelegramOtpFromUrl() {
+  const hash = window.location.hash || '';
+  const search = window.location.search || '';
+  let otpParam = null;
+
+  if (hash.includes('otp=')) {
+    const match = hash.match(/[?&]otp=([0-9]{6})/);
+    if (match) otpParam = match[1];
+  } else if (search.includes('otp=')) {
+    const match = search.match(/[?&]otp=([0-9]{6})/);
+    if (match) otpParam = match[1];
+  }
+
+  if (!otpParam || otpParam.length !== 6) {
+    return false; // No OTP in URL
+  }
+
+  console.log('[Telegram Auth] Seamless OTP login starting for code:', otpParam);
+  showTelegramAuthOverlay('Telegram orqali avtomatik kirilmoqda...');
+
+  try {
+    const response = await fetch('/auth/telegram-otp', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: otpParam }),
+    });
+
+    const data = await response.json().catch(() => ({}));
+
+    if (response.ok && data.token) {
+      if (typeof setToken === 'function') {
+        setToken(data.token);
+      } else {
+        localStorage.setItem('jwt_token', data.token);
+      }
+      if (data.refreshToken) {
+        localStorage.setItem('refresh_token', data.refreshToken);
+      }
+      if (data.user) {
+        window.currentUser = data.user;
+      }
+
+      window.dispatchEvent(new CustomEvent('auth:token-changed'));
+      cleanOtpFromUrl();
+      hideTelegramAuthOverlay();
+
+      if (typeof window.switchView === 'function') {
+        window.switchView('focus');
+      } else {
+        window.location.hash = '#focus';
+      }
+
+      if (typeof showToast === 'function') {
+        showToast('✅ Tizimga muvaffaqiyatli kirildi!', 3000);
+      }
+      return true;
+    } else {
+      const errorMsg = data.message || "Kod muddati o'tgan yoki yaroqsiz. Iltimos, Telegram botdan yangi kod oling.";
+      cleanOtpFromUrl();
+      hideTelegramAuthOverlay();
+
+      if (typeof window.switchView === 'function') {
+        window.switchView('login');
+      } else {
+        window.location.hash = '#login';
+      }
+
+      setTimeout(() => {
+        const otpStatusMsg = document.getElementById('otpStatusMsg');
+        if (otpStatusMsg) {
+          otpStatusMsg.textContent = errorMsg;
+          otpStatusMsg.className = 'otp-status-msg error';
+        }
+      }, 100);
+
+      return false;
+    }
+  } catch (err) {
+    console.error('[Telegram Auth] Error during seamless OTP verification:', err);
+    cleanOtpFromUrl();
+    hideTelegramAuthOverlay();
+
+    if (typeof window.switchView === 'function') {
+      window.switchView('login');
+    } else {
+      window.location.hash = '#login';
+    }
+
+    setTimeout(() => {
+      const otpStatusMsg = document.getElementById('otpStatusMsg');
+      if (otpStatusMsg) {
+        otpStatusMsg.textContent = "Tarmoq xatosi. Iltimos qayta urinib ko'ring yoki botdan yangi kod oling.";
+        otpStatusMsg.className = 'otp-status-msg error';
+      }
+    }, 100);
+
+    return false;
+  }
+}
 
 /**
  * OAuth/token callback sahifasida chaqiriladi.
@@ -175,4 +322,5 @@ function handleCallback() {
   }
 }
 window.handleCallback = handleCallback;
+
 

@@ -205,12 +205,12 @@ public class TelegramBotPoller {
 
             TelegramAuthService.OtpResult result = telegramAuthService.getOrGenerateOtpResult(telegramId, username, firstName, lastName, phoneNumber, languageCode, photoUrl);
             int remainingSec = telegramAuthService.getRemainingSecondsForUser(telegramId);
-            String replyText = buildOtpMessage(result.code(), remainingSec > 0 ? remainingSec : 120, result.isNew());
+            String replyText = buildOtpMessage(result.code(), remainingSec > 0 ? remainingSec : 60, result.isNew());
 
             Map<String, Object> inlineMarkup = createInlineKeyboard(result.code());
             Long sentMessageId = sendMessage(webClient, chatId, replyText, inlineMarkup);
             if (sentMessageId != null) {
-                scheduleExpirationTask(webClient, chatId, sentMessageId, remainingSec > 0 ? remainingSec : 120);
+                scheduleExpirationTask(webClient, chatId, sentMessageId, remainingSec > 0 ? remainingSec : 60);
             }
         } else if (command.contains("Pomodoro Nima") || command.contains("Pomodoro nima") || command.contains("pomodoro nima")) {
             String explanation = buildPomodoroExplanationMessage();
@@ -273,12 +273,12 @@ public class TelegramBotPoller {
         } else if (command.startsWith("/login") || !command.isBlank()) {
             TelegramAuthService.OtpResult result = telegramAuthService.getOrGenerateOtpResult(telegramId, username, firstName, lastName, phoneNumber, languageCode, photoUrl);
             int remainingSec = telegramAuthService.getRemainingSecondsForUser(telegramId);
-            String replyText = buildOtpMessage(result.code(), remainingSec > 0 ? remainingSec : 120, result.isNew());
+            String replyText = buildOtpMessage(result.code(), remainingSec > 0 ? remainingSec : 60, result.isNew());
 
             Map<String, Object> inlineMarkup = createInlineKeyboard(result.code());
             Long sentMessageId = sendMessage(webClient, chatId, replyText, inlineMarkup);
             if (sentMessageId != null) {
-                scheduleExpirationTask(webClient, chatId, sentMessageId, remainingSec > 0 ? remainingSec : 120);
+                scheduleExpirationTask(webClient, chatId, sentMessageId, remainingSec > 0 ? remainingSec : 60);
             }
         } else {
             String replyText = buildStartContactRequestMessage(firstName);
@@ -388,14 +388,14 @@ public class TelegramBotPoller {
             }
 
             String photoUrl = getUserProfilePhotoUrl(webClient, telegramId);
-            // Force generate a fresh 120s OTP code on renew click
+            // Force generate a fresh 60s OTP code on renew click
             String newCode = telegramAuthService.forceGenerateOtpCode(telegramId, username, firstName, null, null, null, photoUrl);
-            String updatedText = buildOtpMessage(newCode, 120, true);
+            String updatedText = buildOtpMessage(newCode, 60, true);
             Map<String, Object> newInlineMarkup = createInlineKeyboard(newCode);
 
             editMessageText(webClient, chatId, messageId.longValue(), updatedText, newInlineMarkup);
-            answerCallbackQuery(webClient, callbackQueryId, "Yangi 2 daqiqalik kod yaratildi! ⚡", false);
-            scheduleExpirationTask(webClient, chatId, messageId.longValue(), 120);
+            answerCallbackQuery(webClient, callbackQueryId, "Yangi 1 daqiqalik kod yaratildi! ⚡", false);
+            scheduleExpirationTask(webClient, chatId, messageId.longValue(), 60);
         }
     }
 
@@ -426,10 +426,10 @@ public class TelegramBotPoller {
     }
 
     private String buildOtpMessage(String code, int remainingSeconds, boolean isNew) {
-        if (isNew || remainingSeconds >= 115) {
+        if (isNew || remainingSeconds >= 55) {
             return "🔑 <b>Bir martalik kirish kodi / One-time login code:</b>\n" +
                    "<code>" + code + "</code>\n\n" +
-                   "⏱ <b>Amal qilish muddati / Valid for:</b> 2 daqiqa (120 soniya)\n\n" +
+                   "⏱ <b>Amal qilish muddati / Valid for:</b> 1 daqiqa (60 soniya)\n\n" +
                    "👇 Saytga kirish uchun quyidagi <b>Login</b> tugmasini bosing:";
         } else {
             return "🔑 <b>Faol kirish kodingiz / Your active login code:</b>\n" +

@@ -81,14 +81,14 @@ public class TelegramAuthService {
         return 0;
     }
 
-    private static final long OTP_TTL_MS = 120000L; // 2 minutes (120 seconds)
+    private static final long OTP_TTL_MS = 60000L; // 1 minute (60 seconds)
 
     /**
-     * Retrieves existing active code (<120s) or generates a new 6-digit OTP code for user, returning OtpResult.
+     * Retrieves existing active code (<60s) or generates a new 6-digit OTP code for user, returning OtpResult.
      */
     public OtpResult getOrGenerateOtpResult(Long telegramId, String username, String firstName, String lastName, String phoneNumber, String languageCode, String photoUrl) {
         long now = System.currentTimeMillis();
-        // Clean expired entries (> 120s)
+        // Clean expired entries (> 60s)
         otpStorage.entrySet().removeIf(e -> now - e.getValue().createdAt > OTP_TTL_MS);
 
         // If telegramId already has an active code, return that existing code!
@@ -110,7 +110,7 @@ public class TelegramAuthService {
         if (telegramId != null) {
             lastOtpGenerationTimeStorage.put(telegramId, now);
         }
-        log.info("Generated new 2-minute unique OTP code {} for telegramId {}", code, telegramId);
+        log.info("Generated new 1-minute unique OTP code {} for telegramId {}", code, telegramId);
         return new OtpResult(code, true);
     }
 
@@ -136,7 +136,7 @@ public class TelegramAuthService {
     }
 
     /**
-     * Retrieves existing active code (<120s) or generates a new 6-digit OTP code for user.
+     * Retrieves existing active code (<60s) or generates a new 6-digit OTP code for user.
      */
     public String getOrGenerateOtpCode(Long telegramId, String username, String firstName, String photoUrl) {
         return getOrGenerateOtpResult(telegramId, username, firstName, photoUrl).code();
@@ -158,7 +158,7 @@ public class TelegramAuthService {
         if (telegramId != null) {
             lastOtpGenerationTimeStorage.put(telegramId, now);
         }
-        log.info("Force-generated fresh 2-minute unique OTP code {} for telegramId {}", code, telegramId);
+        log.info("Force-generated fresh 1-minute unique OTP code {} for telegramId {}", code, telegramId);
         return code;
     }
 
@@ -167,14 +167,14 @@ public class TelegramAuthService {
     }
 
     /**
-     * Generates a 6-digit random OTP code valid for 2 minutes (120s).
+     * Generates a 6-digit random OTP code valid for 1 minute (60s).
      */
     public String generateOtpCode(Long telegramId, String username, String firstName, String photoUrl) {
         return getOrGenerateOtpCode(telegramId, username, firstName, photoUrl);
     }
 
     /**
-     * Validates and consumes the 6-digit OTP code if valid and fresh (< 120s).
+     * Validates and consumes the 6-digit OTP code if valid and fresh (< 60s).
      */
     public OtpData validateAndConsumeOtpCode(String code) {
         if (code == null || code.isBlank()) return null;
